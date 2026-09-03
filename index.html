@@ -160,10 +160,10 @@
 
 <section class="ng-hero" id="ng-hero">
   <!-- floating metric pills -->
-  <span class="ng-pill ng-pill--cpa"  style="--x:6%;  --y:8%;">  <i class="dot" style="background:#ff5a5f"></i>CPA</span>
-  <span class="ng-pill ng-pill--roas" style="--x:64%; --y:16%;"> <i class="dot" style="background:#b6f24a"></i>ROAS</span>
-  <span class="ng-pill ng-pill--cpc"  style="--x:74%; --y:60%;"> <i class="dot" style="background:#5b5bff"></i>CPC</span>
-  <span class="ng-pill ng-pill--ctr"  style="--x:14%; --y:68%;"> <i class="dot" style="background:#2fe6a0"></i>CTR</span>
+  <span class="ng-pill ng-pill--cpa"  style="--x:6%;  --y:7%;">  <i class="dot" style="background:#ff5a5f"></i>CPA</span>
+  <span class="ng-pill ng-pill--roas" style="--x:64%; --y:5%;"> <i class="dot" style="background:#b6f24a"></i>ROAS</span>
+  <span class="ng-pill ng-pill--cpc"  style="--x:74%; --y:58%;"> <i class="dot" style="background:#5b5bff"></i>CPC</span>
+  <span class="ng-pill ng-pill--ctr"  style="--x:14%; --y:55%;"> <i class="dot" style="background:#2fe6a0"></i>CTR</span>
 
   <div class="ng-hero__inner">
     <!-- Headline with inline video pills -->
@@ -173,14 +173,14 @@
         <em>trim</em>
         <span>the</span>
         <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448510?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
-        <span>noise.</span>
+        <span>fat.</span>
       </span>
       <span class="ng-line">
         <span>You</span>
-        <em>watch</em>
+        <em>see</em>
         <span>the</span>
         <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448408?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
-        <span>growth.</span>
+        <span>ROAS.</span>
       </span>
     </h1>
 
@@ -383,10 +383,31 @@
     .ng-hero *{animation:none!important;opacity:1!important;transform:none!important;}
   }
 
-  /* Mobile: hide side pills to avoid clutter */
-  @media (max-width:640px){
+  /* CPC/CTR pills sit lower in the hero and start colliding with the
+     subtitle/stats once the viewport gets short relative to the text
+     block, so they're desktop-only; CPA/ROAS stay everywhere since they
+     sit safely in the top corners. */
+  @media (max-width:1024px){
     .ng-pill--cpc,.ng-pill--ctr{display:none;}
-    .ng-vid{width:1.7em;height:.86em;}
+  }
+
+  /* Mobile: hide the inline video pills entirely so the headline reads
+     cleanly at small widths */
+  @media (max-width:640px){
+    .ng-vid{display:none;}
+  }
+
+  /* Keep the 3 stats on one row at every width instead of wrapping */
+  @media (max-width:560px){
+    .ng-stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:38px;
+    }
+    .ng-stat{min-width:0;}
+    .ng-stat__num{font-size:clamp(22px,7vw,30px);}
+    .ng-stat__label{font-size:11px;line-height:1.3;}
   }
 </style>
 
@@ -554,11 +575,11 @@
   .ng-works__inner{max-width:1080px;margin:0 auto;}
 
   /* ---------- Masonry via CSS columns ---------- */
-  .ng-masonry{
+  #ng-works .ng-masonry{
     column-count:5;              /* desktop */
     column-gap:var(--gap);
   }
-  .ng-card{
+  #ng-works .ng-card{
     display:block;
     width:100%;
     margin:0 0 var(--gap);
@@ -572,15 +593,15 @@
     transform:translateY(24px);
     transition:opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1);
   }
-  .ng-card.is-in{opacity:1;transform:translateY(0);}
+  #ng-works .ng-card.is-in{opacity:1;transform:translateY(0);}
 
   /* ---------- Video card ---------- */
-  .ng-card--video{
+  #ng-works .ng-card--video{
     background:#eee;
     line-height:0;
     cursor:pointer;
   }
-  .ng-vidwrap{
+  #ng-works .ng-vidwrap{
     width:100%;
     aspect-ratio:9/16;
     display:block;
@@ -588,24 +609,24 @@
     overflow:hidden;
     transition:transform .5s ease;
   }
-  .ng-vidwrap iframe{
+  #ng-works .ng-vidwrap iframe{
     position:absolute;inset:0;
     width:100%;height:100%;
     object-fit:cover;
     border:0;
     pointer-events:none;
   }
-  .ng-card--video:hover .ng-vidwrap{transform:scale(1.04);}
+  #ng-works .ng-card--video:hover .ng-vidwrap{transform:scale(1.04);}
 
   /* ---------- Testimonial card ---------- */
-  .ng-card--quote{
+  #ng-works .ng-card--quote{
     background:#f4f4f5;
     padding:22px 20px;
     display:flex;
     flex-direction:column;
     gap:14px;
   }
-  .ng-quote__mark{
+  #ng-works .ng-quote__mark{
     font-size:34px;
     line-height:.5;
     color:var(--ink);
@@ -613,27 +634,27 @@
     align-self:flex-end;
     opacity:.85;
   }
-  .ng-quote__text{
+  #ng-works .ng-quote__text{
     margin:0;
     color:#2a2a2a;
     font-size:14px;
     font-weight:500;
     line-height:1.55;
   }
-  .ng-quote__author{
+  #ng-works .ng-quote__author{
     display:flex;
     align-items:center;
     gap:10px;
     margin-top:auto;
   }
-  .ng-quote__author img{
+  #ng-works .ng-quote__author img{
     width:38px;height:38px;border-radius:50%;object-fit:cover;flex:0 0 auto;
   }
-  .ng-quote__author strong{
+  #ng-works .ng-quote__author strong{
     display:block;font-size:13px;color:var(--ink);font-weight:600;
     text-decoration:underline;text-underline-offset:2px;
   }
-  .ng-quote__author span{
+  #ng-works .ng-quote__author span{
     display:block;font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px;
   }
 
@@ -685,24 +706,24 @@
   /* ---------- Responsive breakpoints ---------- */
   /* Tablet: 3 columns */
   @media (max-width:1024px){
-    .ng-masonry{column-count:3;}
+    #ng-works .ng-masonry{column-count:3;}
   }
   /* Mobile: 2 columns */
   @media (max-width:640px){
     .ng-works{padding:44px 14px;}
-    .ng-masonry{column-count:2;--gap:12px;column-gap:12px;}
-    .ng-card--quote{padding:16px 14px;gap:10px;}
-    .ng-quote__text{font-size:12.5px;}
-    .ng-quote__author img{width:32px;height:32px;}
+    #ng-works .ng-masonry{column-count:2;--gap:12px;column-gap:12px;}
+    #ng-works .ng-card--quote{padding:16px 14px;gap:10px;}
+    #ng-works .ng-quote__text{font-size:12.5px;}
+    #ng-works .ng-quote__author img{width:32px;height:32px;}
   }
   /* Very small phones: keep 2 but tighten */
   @media (max-width:360px){
-    .ng-quote__text{font-size:12px;}
+    #ng-works .ng-quote__text{font-size:12px;}
   }
 
   @media (prefers-reduced-motion:reduce){
-    .ng-card,.ng-card--link{opacity:1!important;transform:none!important;transition:none!important;}
-    .ng-vidwrap{transition:none!important;}
+    #ng-works .ng-card, .ng-card--link{opacity:1!important;transform:none!important;transition:none!important;}
+    #ng-works .ng-vidwrap{transition:none!important;}
   }
 </style>
 
@@ -978,7 +999,7 @@
     .ng-jrow__left,.ng-jrow__right,.ng-jrow__mid{grid-column:1;}
     .ng-jrow__left{grid-row:1;}
     .ng-jrow__mid{grid-row:2;}
-    .ng-jrow:last-child .ng-jrow__right{grid-row:3;}
+    .ng-jrow__right{grid-row:3;}
     .ng-label{color:var(--muted)!important;font-size:12px;}
     .ng-label--mid{margin-bottom:12px;color:var(--ink)!important;}
     .ng-p{font-size:14.5px;}
@@ -1470,11 +1491,11 @@
   .ng-grid__inner{max-width:1200px;margin:0 auto;}
 
   /* ---------- Masonry (CSS columns) ---------- */
-  .ng-masonry{
+  #ng-grid .ng-masonry{
     column-count:5;          /* desktop — last column included */
     column-gap:var(--gap);
   }
-  .ng-card{
+  #ng-grid .ng-card{
     display:block;
     width:100%;
     margin:0 0 var(--gap);
@@ -1487,31 +1508,31 @@
     transform:translateY(22px);
     transition:opacity .6s ease, transform .6s cubic-bezier(.44,0,.09,1);
   }
-  .ng-card.is-in{opacity:1;transform:translateY(0);}
+  #ng-grid .ng-card.is-in{opacity:1;transform:translateY(0);}
 
   /* Video */
-  .ng-card--video{background:#eee;line-height:0;cursor:pointer;}
-  .ng-vidwrap{
+  #ng-grid .ng-card--video{background:#eee;line-height:0;cursor:pointer;}
+  #ng-grid .ng-vidwrap{
     width:100%;aspect-ratio:9/16;display:block;position:relative;overflow:hidden;
     transition:transform .5s ease;
   }
-  .ng-vidwrap iframe{
+  #ng-grid .ng-vidwrap iframe{
     position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;pointer-events:none;
   }
-  .ng-card--video:hover .ng-vidwrap{transform:scale(1.04);}
+  #ng-grid .ng-card--video:hover .ng-vidwrap{transform:scale(1.04);}
 
   /* Testimonial */
-  .ng-card--quote{
+  #ng-grid .ng-card--quote{
     background:#f4f4f5;
     padding:18px 16px;
     display:flex;flex-direction:column;gap:12px;
   }
-  .ng-quote__mark{font-size:30px;line-height:.5;color:var(--ink);font-weight:700;align-self:flex-end;opacity:.85;}
-  .ng-quote__text{margin:0;color:#2a2a2a;font-size:13px;font-weight:500;line-height:1.5;}
-  .ng-quote__author{display:flex;align-items:center;gap:9px;margin-top:auto;}
-  .ng-quote__author img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:0 0 auto;}
-  .ng-quote__author strong{display:block;font-size:12px;color:var(--ink);font-weight:600;}
-  .ng-quote__author span{display:block;font-size:11px;color:var(--muted);line-height:1.3;margin-top:1px;}
+  #ng-grid .ng-quote__mark{font-size:30px;line-height:.5;color:var(--ink);font-weight:700;align-self:flex-end;opacity:.85;}
+  #ng-grid .ng-quote__text{margin:0;color:#2a2a2a;font-size:13px;font-weight:500;line-height:1.5;}
+  #ng-grid .ng-quote__author{display:flex;align-items:center;gap:9px;margin-top:auto;}
+  #ng-grid .ng-quote__author img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:0 0 auto;}
+  #ng-grid .ng-quote__author strong{display:block;font-size:12px;color:var(--ink);font-weight:600;}
+  #ng-grid .ng-quote__author span{display:block;font-size:11px;color:var(--muted);line-height:1.3;margin-top:1px;}
 
   /* Colored promo cards */
   .ng-card--promo{
@@ -1536,20 +1557,20 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width:1024px){         /* tablet → 3 columns */
-    .ng-masonry{column-count:3;}
+    #ng-grid .ng-masonry{column-count:3;}
   }
   @media (max-width:640px){          /* mobile → 2 columns */
     .ng-grid{padding:40px 12px 56px;}
-    .ng-masonry{column-count:2;--gap:10px;column-gap:10px;}
-    .ng-card--quote{padding:14px 12px;gap:9px;}
-    .ng-quote__text{font-size:12px;}
-    .ng-quote__author img{width:30px;height:30px;}
+    #ng-grid .ng-masonry{column-count:2;--gap:10px;column-gap:10px;}
+    #ng-grid .ng-card--quote{padding:14px 12px;gap:9px;}
+    #ng-grid .ng-quote__text{font-size:12px;}
+    #ng-grid .ng-quote__author img{width:30px;height:30px;}
     .ng-card--promo h4{font-size:14px;}
   }
 
   @media (prefers-reduced-motion:reduce){
-    .ng-card{opacity:1!important;transform:none!important;transition:none!important;}
-    .ng-vidwrap{transition:none!important;}
+    #ng-grid .ng-card{opacity:1!important;transform:none!important;transition:none!important;}
+    #ng-grid .ng-vidwrap{transition:none!important;}
   }
 </style>
 
@@ -1978,14 +1999,13 @@
   }
   .ng-words__track{
     display:flex;flex-direction:column;
-    animation:ngWordsUp 26s linear infinite;
+    will-change:transform;
   }
   .ng-words__track span{
     font-size:clamp(40px,6vw,74px);
     font-weight:800;line-height:1.02;color:var(--green);letter-spacing:-.01em;
   }
   .ng-words__track span.i{font-style:italic;}
-  .ng-words:hover .ng-words__track{animation-play-state:paused;}
 
   /* ----- Form ----- */
   .ng-form{padding:44px 44px 40px;display:flex;flex-direction:column;}
@@ -2032,12 +2052,6 @@
   }
   .ng-send:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(150,190,20,.35);}
 
-  /* ----- Keyframes ----- */
-  @keyframes ngWordsUp{
-    from{transform:translateY(0);}
-    to{transform:translateY(-50%);}   /* two copies → seamless */
-  }
-
   /* ----- Responsive ----- */
   @media (max-width:820px){
     .ng-panel{grid-template-columns:1fr;min-height:0;}
@@ -2047,11 +2061,10 @@
               mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
     }
     /* on mobile show words as a horizontal strip instead */
-    .ng-words__track{flex-direction:row;gap:24px;animation:ngWordsX 22s linear infinite;align-items:center;}
+    .ng-words__track{flex-direction:row;gap:24px;align-items:center;}
     .ng-words__track span{font-size:44px;white-space:nowrap;}
     .ng-form{padding:30px 22px 32px;}
   }
-  @keyframes ngWordsX{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
   @media (max-width:420px){
     .ng-form-sec{padding:28px 12px 48px;}
@@ -2061,7 +2074,7 @@
   }
 
   @media (prefers-reduced-motion:reduce){
-    .ng-words__track{animation:none!important;}
+    .ng-words__track{transform:none!important;}
     .ng-words{mask-image:none;-webkit-mask-image:none;}
   }
 </style>
@@ -2086,6 +2099,57 @@
     btn.style.pointerEvents = 'none';
     setTimeout(function(){ btn.textContent = 'Send'; btn.style.pointerEvents=''; }, 2500);
   });
+})();
+</script>
+
+<script>
+(function(){
+  // Scroll-driven word column (replaces the old free-running CSS loop):
+  // position is derived from the section's scroll offset, wrapped by one
+  // copy's own rendered size, so it always tracks the page scroll and can
+  // never show a gap regardless of viewport/panel height.
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+
+  var wrap = document.querySelector('#ng-form .ng-words');
+  var track = document.querySelector('#ng-form .ng-words__track');
+  if(!wrap || !track) return;
+
+  var ticking = false;
+  var isRow = window.innerWidth <= 820;
+
+  function update(){
+    var rect = wrap.getBoundingClientRect();
+    var progress = window.innerHeight - rect.top; // grows as the panel scrolls up into view
+    var speed = 0.35;
+    var offset = progress * speed;
+
+    if(isRow){
+      var totalW = track.scrollWidth / 2; // one word-copy's width
+      if(totalW > 0){
+        var x = ((offset % totalW) + totalW) % totalW;
+        track.style.transform = 'translate3d(-' + x.toFixed(1) + 'px,0,0)';
+      }
+    } else {
+      var totalH = track.scrollHeight / 2; // one word-copy's height
+      if(totalH > 0){
+        var y = ((offset % totalH) + totalH) % totalH;
+        track.style.transform = 'translate3d(0,-' + y.toFixed(1) + 'px,0)';
+      }
+    }
+    ticking = false;
+  }
+
+  function onScroll(){
+    if(!ticking){ window.requestAnimationFrame(update); ticking = true; }
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', function(){
+    isRow = window.innerWidth <= 820;
+    update();
+  });
+  update();
 })();
 </script>
 
@@ -2176,15 +2240,13 @@
     </div>
 
     <!-- floating metric pills -->
-    <span class="ng-fpill" style="--x:64%;--y:16%;"><i style="background:#b6f24a"></i>TOF</span>
-    <span class="ng-fpill" style="--x:22%;--y:64%;"><i style="background:#5b5bff"></i>A/B</span>
-    <span class="ng-fpill" style="--x:40%;--y:88%;"><i style="background:#2fe6a0"></i>LTV</span>
-    <span class="ng-fpill" style="--x:82%;--y:74%;"><i style="background:#ff5a5f"></i>CTA</span>
+    <span class="ng-fpill" style="--x:64%;--y:12%;"><i style="background:#b6f24a"></i>TOF</span>
+    <span class="ng-fpill" style="--x:20%;--y:30%;"><i style="background:#5b5bff"></i>A/B</span>
+    <span class="ng-fpill" style="--x:46%;--y:46%;"><i style="background:#2fe6a0"></i>LTV</span>
+    <span class="ng-fpill" style="--x:82%;--y:24%;"><i style="background:#ff5a5f"></i>CTA</span>
 
     <div class="ng-foot-row">
       <span class="ng-foot-year">2020&ndash;2026</span>
-      <a href="#" class="ng-foot-link">Terms and Conditions</a>
-      <a href="#" class="ng-foot-link">Privacy Policy</a>
       <button class="ng-top" type="button" aria-label="Back to top">&uarr;</button>
     </div>
   </footer>
@@ -2240,6 +2302,10 @@
     position:relative;
     background:#fff;
     padding:70px 22px 40px;
+    min-height:230px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
     overflow:hidden;
     border-top:1px solid var(--line);
   }
@@ -2272,8 +2338,6 @@
     display:flex;align-items:center;gap:22px;flex-wrap:wrap;
   }
   .ng-foot-year{font-size:13px;font-weight:600;color:var(--ink);}
-  .ng-foot-link{font-size:13px;color:#4a4a4a;text-decoration:underline;text-underline-offset:3px;}
-  .ng-foot-link:hover{color:var(--ink);}
   .ng-top{
     margin-left:auto;width:40px;height:40px;border-radius:50%;
     border:1px solid var(--line);background:#fff;cursor:pointer;
