@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmad Jan — Performance Video Editor</title>
+
+<!-- Single shared font load for the whole page -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+<!-- Lenis v1.3.26 — smooth scroll (MIT license, see assets/js/lenis.LICENSE.txt).
+     Vendored locally rather than pulled from a CDN so the page has no
+     third-party runtime dependency once it's uploaded to Hostinger.
+     Loaded early so it's ready before the page's scroll-triggered
+     animations start listening; falls back gracefully to native
+     scroll-behavior (see body{scroll-behavior:smooth} below) if this
+     file is ever missing. -->
+<script src="assets/js/lenis.min.js"></script>
+
+<style>
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;}
+  body{font-family:Poppins,Helvetica Neue,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+  *{box-sizing:border-box;}
+  /* offset anchor jumps so the sticky nav does not cover section tops */
+  section[id]{scroll-margin-top:70px;}
+</style>
+</head>
+<body>
+
+<!-- ===================== nav-bar.html ===================== -->
+<!-- ============================================================
+     NAV BAR — sticky top
+     Logo (Ahmad Jan) · center links · "Let's talk" button
+     Mobile: links collapse into a hamburger menu.
+     Self-contained HTML + CSS + JS.
+     ============================================================ -->
+
+<header class="ng-nav" id="ng-nav">
+  <div class="ng-nav__inner">
+    <a href="#ng-hero" class="ng-nav__logo">Ahmad<br>Jan</a>
+
+    <nav class="ng-nav__links" id="ng-nav-links">
+      <a href="#ng-hero">Home</a>
+      <a href="#ng-journey">Journey</a>
+      <a href="#ng-grid">Works</a>
+      <a href="#ng-qa">FAQs</a>
+    </nav>
+
+    <a href="#ng-form" class="ng-nav__cta">Let&rsquo;s talk</a>
+
+    <button class="ng-nav__burger" id="ng-burger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .ng-nav{
+    position:sticky;top:0;z-index:100;
+    background:rgba(255,255,255,.86);
+    backdrop-filter:saturate(180%) blur(12px);
+    -webkit-backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid #efeff1;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+  }
+  .ng-nav *{box-sizing:border-box;}
+  .ng-nav__inner{
+    max-width:1180px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 22px;gap:20px;
+  }
+  .ng-nav__logo{
+    font-size:12px;font-weight:600;line-height:1.15;color:#111;text-decoration:none;
+    letter-spacing:.02em;flex:0 0 auto;
+  }
+  .ng-nav__links{
+    display:flex;gap:30px;
+    position:absolute;left:50%;transform:translateX(-50%);
+  }
+  .ng-nav__links a{
+    font-size:14px;font-weight:500;color:#2a2a2a;text-decoration:none;
+    transition:color .2s ease;position:relative;
+  }
+  .ng-nav__links a::after{
+    content:"";position:absolute;left:0;bottom:-4px;width:0;height:1.5px;background:#111;transition:width .25s ease;
+  }
+  .ng-nav__links a:hover{color:#000;}
+  .ng-nav__links a:hover::after{width:100%;}
+  .ng-nav__cta{
+    flex:0 0 auto;
+    background:#111;color:#fff;text-decoration:none;
+    font-size:13px;font-weight:600;padding:9px 18px;border-radius:999px;
+    transition:transform .2s ease, background .2s ease;
+  }
+  .ng-nav__cta:hover{transform:translateY(-1px);background:#000;}
+
+  .ng-nav__burger{
+    display:none;flex-direction:column;gap:4px;
+    background:none;border:none;cursor:pointer;padding:6px;
+  }
+  .ng-nav__burger span{width:22px;height:2px;background:#111;border-radius:2px;transition:.3s;}
+  .ng-nav__burger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+  .ng-nav__burger.open span:nth-child(2){opacity:0;}
+  .ng-nav__burger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:820px){
+    .ng-nav__links{
+      position:fixed;left:0;right:0;top:57px;transform:none;
+      flex-direction:column;gap:0;
+      background:#fff;border-bottom:1px solid #efeff1;
+      max-height:0;overflow:hidden;transition:max-height .35s ease;
+    }
+    .ng-nav__links.open{max-height:280px;}
+    .ng-nav__links a{padding:15px 22px;border-top:1px solid #f3f3f4;font-size:15px;}
+    .ng-nav__links a::after{display:none;}
+    .ng-nav__burger{display:flex;}
+    .ng-nav__cta{margin-left:auto;margin-right:6px;}
+  }
+  @media (max-width:420px){
+    .ng-nav__cta{display:none;}
+  }
+</style>
+
+<script>
+(function(){
+  var burger = document.getElementById('ng-burger');
+  var links  = document.getElementById('ng-nav-links');
+  if(!burger) return;
+  burger.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  // close menu after clicking a link (mobile)
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      links.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded','false');
+    });
+  });
+})();
+</script>
+
+
+<!-- ===================== hero-section.html ===================== -->
+<!-- ============================================================
+     HERO SECTION — "I cut the ads. You cut the CPA."
+     Self-contained: HTML + CSS + JS all inline.
+     Font matches the live site: Poppins throughout.
+     Drop this whole block into an HTML widget / code-snippet plugin.
+     Replace the VIDEO SOURCES and stat numbers with your own.
+     ============================================================ -->
+
+<!-- Poppins — Google Fonts -->
+
+<section class="ng-hero" id="ng-hero">
+  <!-- floating metric pills -->
+  <span class="ng-pill ng-pill--cpa"  style="--x:6%;  --y:8%;">  <i class="dot" style="background:#ff5a5f"></i>CPA</span>
+  <span class="ng-pill ng-pill--roas" style="--x:64%; --y:16%;"> <i class="dot" style="background:#b6f24a"></i>ROAS</span>
+  <span class="ng-pill ng-pill--cpc"  style="--x:74%; --y:60%;"> <i class="dot" style="background:#5b5bff"></i>CPC</span>
+  <span class="ng-pill ng-pill--ctr"  style="--x:14%; --y:68%;"> <i class="dot" style="background:#2fe6a0"></i>CTR</span>
+
+  <div class="ng-hero__inner">
+    <!-- Headline with inline video pills -->
+    <h1 class="ng-headline">
+      <span class="ng-line">
+        <span>I</span>
+        <em>trim</em>
+        <span>the</span>
+        <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448510?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
+        <span>noise.</span>
+      </span>
+      <span class="ng-line">
+        <span>You</span>
+        <em>watch</em>
+        <span>the</span>
+        <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448408?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
+        <span>growth.</span>
+      </span>
+    </h1>
+
+    <p class="ng-sub">Turning raw footage into scroll-stopping, performance-driven<br>ads that help DTC brands scale with confidence.</p>
+
+    <!-- Stats — placeholders: swap in Ahmad's real figures before launch -->
+    <div class="ng-stats">
+      <div class="ng-stat">
+        <div class="ng-stat__num" data-count="60"  data-prefix=""  data-suffix="+">0+</div>
+        <div class="ng-stat__label">Brands trusted</div>
+      </div>
+      <div class="ng-stat">
+        <div class="ng-stat__num" data-count="20"  data-prefix="$" data-suffix="m+">$0m+</div>
+        <div class="ng-stat__label">Revenue driven</div>
+      </div>
+      <div class="ng-stat">
+        <div class="ng-stat__num" data-count="5"   data-prefix=""  data-suffix="k+">0k+</div>
+        <div class="ng-stat__label">Iterations created</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ng-hero{
+    --ink:#0e0e0e;
+    --muted:#9aa0a6;
+    position:relative;
+    width:100%;
+    min-height:88vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 20px;
+    background:#fff;
+    overflow:hidden;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-hero *{box-sizing:border-box;}
+
+  .ng-hero__inner{
+    width:100%;
+    max-width:1180px;
+    text-align:center;
+    position:relative;
+    z-index:2;
+  }
+
+  /* ---------- Headline ---------- */
+  .ng-headline{
+    margin:0;
+    color:rgb(35,35,35);
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    letter-spacing:-.02em;
+    line-height:1.02;
+    font-size:clamp(40px,8.2vw,116px);
+  }
+  .ng-line{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:.18em;
+  }
+  .ng-headline em{
+    font-style:italic;
+    font-weight:400;
+  }
+  /* each word/pill fades + rises in on load */
+  .ng-line > *{
+    opacity:0;
+    transform:translateY(28px);
+    animation:ngRise .8s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  .ng-line:nth-child(1) > *:nth-child(1){animation-delay:.05s}
+  .ng-line:nth-child(1) > *:nth-child(2){animation-delay:.12s}
+  .ng-line:nth-child(1) > *:nth-child(3){animation-delay:.19s}
+  .ng-line:nth-child(1) > *:nth-child(4){animation-delay:.26s}
+  .ng-line:nth-child(1) > *:nth-child(5){animation-delay:.33s}
+  .ng-line:nth-child(2) > *:nth-child(1){animation-delay:.40s}
+  .ng-line:nth-child(2) > *:nth-child(2){animation-delay:.47s}
+  .ng-line:nth-child(2) > *:nth-child(3){animation-delay:.54s}
+  .ng-line:nth-child(2) > *:nth-child(4){animation-delay:.61s}
+  .ng-line:nth-child(2) > *:nth-child(5){animation-delay:.68s}
+
+  /* inline video pill */
+  .ng-vid{
+    display:inline-block;
+    width:1.9em;
+    height:.92em;
+    border-radius:999px;
+    overflow:hidden;
+    vertical-align:middle;
+    background:#e9e9e9;
+    box-shadow:0 6px 20px rgba(0,0,0,.14);
+    transform-origin:center;
+    animation:ngRise .8s cubic-bezier(.22,1,.36,1) forwards, ngVidPulse 5s ease-in-out infinite;
+  }
+  .ng-vid iframe{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    border:0;
+    pointer-events:none;
+  }
+
+  /* ---------- Sub-heading ---------- */
+  .ng-sub{
+    margin:26px auto 0;
+    max-width:640px;
+    color:rgb(35,35,35);
+    font-family:'Poppins',sans-serif;
+    font-size:clamp(15px,1.6vw,20px);
+    font-weight:500;
+    line-height:1.5;
+    opacity:0;
+    animation:ngRise .8s cubic-bezier(.22,1,.36,1) .8s forwards;
+  }
+
+  /* ---------- Stats ---------- */
+  .ng-stats{
+    margin-top:54px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:clamp(30px,7vw,96px);
+    opacity:0;
+    animation:ngRise .8s cubic-bezier(.22,1,.36,1) .95s forwards;
+  }
+  .ng-stat__num{
+    font-family:'Poppins',sans-serif;
+    font-size:clamp(30px,4.4vw,58px);
+    font-weight:500;
+    color:rgb(35,35,35);
+    letter-spacing:-.02em;
+    line-height:1;
+  }
+  .ng-stat__label{
+    margin-top:8px;
+    color:var(--muted);
+    font-family:'Poppins',sans-serif;
+    font-size:clamp(13px,1.3vw,18px);
+    font-weight:500;
+  }
+
+  /* ---------- Floating metric pills ---------- */
+  .ng-pill{
+    position:absolute;
+    left:var(--x);
+    top:var(--y);
+    z-index:1;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 18px;
+    border-radius:999px;
+    background:#fff;
+    box-shadow:0 8px 26px rgba(0,0,0,.10);
+    font-size:clamp(13px,1.2vw,16px);
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:.04em;
+    opacity:0;
+    animation:ngPillIn .7s ease forwards, ngFloat 6s ease-in-out infinite;
+  }
+  .ng-pill .dot{
+    width:10px;height:10px;border-radius:50%;display:inline-block;
+  }
+  .ng-pill--cpa {animation-delay:.9s,.9s;}
+  .ng-pill--roas{animation-delay:1.05s,1.05s;}
+  .ng-pill--cpc {animation-delay:1.2s,1.2s;}
+  .ng-pill--ctr {animation-delay:1.35s,1.35s;}
+  /* vary float rhythm so they don't move in sync */
+  .ng-pill--roas{animation-duration:.7s,7.5s;}
+  .ng-pill--cpc {animation-duration:.7s,6.6s;}
+  .ng-pill--ctr {animation-duration:.7s,8s;}
+
+  /* ---------- Keyframes ---------- */
+  @keyframes ngRise{
+    to{opacity:1;transform:translateY(0);}
+  }
+  @keyframes ngPillIn{
+    0%{opacity:0;transform:scale(.7);}
+    100%{opacity:1;transform:scale(1);}
+  }
+  @keyframes ngFloat{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-14px);}
+  }
+  @keyframes ngVidPulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+  }
+
+  /* Respect reduced-motion users */
+  @media (prefers-reduced-motion:reduce){
+    .ng-hero *{animation:none!important;opacity:1!important;transform:none!important;}
+  }
+
+  /* Mobile: hide side pills to avoid clutter */
+  @media (max-width:640px){
+    .ng-pill--cpc,.ng-pill--ctr{display:none;}
+    .ng-vid{width:1.7em;height:.86em;}
+  }
+</style>
+
+<script>
+(function(){
+  // Count-up animation for the stats, triggered when hero scrolls into view.
+  function animateCount(el){
+    var target = parseFloat(el.getAttribute('data-count'));
+    var prefix = el.getAttribute('data-prefix') || '';
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1400, start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start)/dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);           // easeOutCubic
+      var val = Math.round(target * eased);
+      el.textContent = prefix + val + suffix;
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function run(){
+    var nums = document.querySelectorAll('#ng-hero .ng-stat__num');
+    nums.forEach(function(n){ animateCount(n); });
+  }
+
+  var hero = document.getElementById('ng-hero');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ run(); io.disconnect(); }
+      });
+    }, {threshold:.35});
+    io.observe(hero);
+  } else {
+    // fallback: run after slight delay
+    setTimeout(run, 1200);
+  }
+})();
+</script>
+
+
+<!-- ===================== works-section.html ===================== -->
+<!-- ============================================================
+     WORKS / PORTFOLIO SECTION — masonry grid
+     Card types: video · testimonial · CTA
+     Responsive columns:  desktop 4  ·  tablet 3  ·  mobile 2
+     Self-contained: HTML + CSS + JS inline.
+     Drop into an HTML widget / code-snippet plugin.
+     Swap the video URLs, testimonial text, avatars & CTA link.
+     ============================================================ -->
+
+<!-- Poppins (same family as the rest of the site) -->
+
+<section class="ng-works" id="ng-works">
+  <div class="ng-works__inner">
+
+    <!-- MASONRY GRID -->
+    <div class="ng-masonry">
+
+      <!-- CTA card -->
+      <div class="ng-card ng-card--cta" data-anim>
+        <div class="ng-cta__text">
+          <h3>Have a brand?<br>Let&rsquo;s build ads.</h3>
+          <a href="#ng-form" class="ng-cta__link">Start a project</a>
+        </div>
+      </div>
+
+      <!-- Video card -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448464?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial card -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Ahmad plugged straight into our workflow and started shipping ad-ready cuts within days — no hand-holding needed.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%25236366f1%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3EMR%3C/text%3E%3C/svg%3E" alt="M. Reyes">
+          <div>
+            <strong>M. Reyes</strong>
+            <span>Marketing Lead, Bloom &amp; Co.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video card -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220657751?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Video card -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448399?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- "See full portfolio" inline link -->
+      <div class="ng-card ng-card--link" data-anim>
+        <a href="#ng-grid">See full portfolio <span aria-hidden="true">&darr;</span></a>
+      </div>
+
+      <!-- Video card -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448452?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial card -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Sharp editing instincts and genuinely useful hook ideas. Our Meta creatives have been outperforming everything we ran before.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%2523059669%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3EJW%3C/text%3E%3C/svg%3E" alt="J. Whitfield">
+          <div>
+            <strong>J. Whitfield</strong>
+            <span>Growth Marketer, Nordholt</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video card -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448398?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial card -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Handed over a folder of raw clips and got back ads that actually looked like ads — clean cuts, strong pacing, real results.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%2523d97706%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3ESK%3C/text%3E%3C/svg%3E" alt="S. Kapoor">
+          <div>
+            <strong>S. Kapoor</strong>
+            <span>Founder, Verve Supply</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video card -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448330?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Video card -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448770?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+    </div><!-- /masonry -->
+  </div>
+</section>
+
+<style>
+  .ng-works{
+    --ink:#181818;
+    --muted:#8a8f96;
+    --card-radius:18px;
+    --gap:18px;
+    background:#fff;
+    padding:64px 20px;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-works *{box-sizing:border-box;}
+  .ng-works__inner{max-width:1080px;margin:0 auto;}
+
+  /* ---------- Masonry via CSS columns ---------- */
+  .ng-masonry{
+    column-count:5;              /* desktop */
+    column-gap:var(--gap);
+  }
+  .ng-card{
+    display:block;
+    width:100%;
+    margin:0 0 var(--gap);
+    break-inside:avoid;          /* keep cards whole across columns */
+    -webkit-column-break-inside:avoid;
+    border-radius:var(--card-radius);
+    overflow:hidden;
+    position:relative;
+    /* scroll-in animation */
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1);
+  }
+  .ng-card.is-in{opacity:1;transform:translateY(0);}
+
+  /* ---------- Video card ---------- */
+  .ng-card--video{
+    background:#eee;
+    line-height:0;
+    cursor:pointer;
+  }
+  .ng-vidwrap{
+    width:100%;
+    aspect-ratio:9/16;
+    display:block;
+    position:relative;
+    overflow:hidden;
+    transition:transform .5s ease;
+  }
+  .ng-vidwrap iframe{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    object-fit:cover;
+    border:0;
+    pointer-events:none;
+  }
+  .ng-card--video:hover .ng-vidwrap{transform:scale(1.04);}
+
+  /* ---------- Testimonial card ---------- */
+  .ng-card--quote{
+    background:#f4f4f5;
+    padding:22px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .ng-quote__mark{
+    font-size:34px;
+    line-height:.5;
+    color:var(--ink);
+    font-weight:700;
+    align-self:flex-end;
+    opacity:.85;
+  }
+  .ng-quote__text{
+    margin:0;
+    color:#2a2a2a;
+    font-size:14px;
+    font-weight:500;
+    line-height:1.55;
+  }
+  .ng-quote__author{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:auto;
+  }
+  .ng-quote__author img{
+    width:38px;height:38px;border-radius:50%;object-fit:cover;flex:0 0 auto;
+  }
+  .ng-quote__author strong{
+    display:block;font-size:13px;color:var(--ink);font-weight:600;
+    text-decoration:underline;text-underline-offset:2px;
+  }
+  .ng-quote__author span{
+    display:block;font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px;
+  }
+
+  /* ---------- CTA card ---------- */
+  .ng-card--cta{
+    background:#0b0b0b;
+    aspect-ratio:3/4;
+    display:flex;
+    align-items:flex-end;
+    padding:26px 22px;
+  }
+  .ng-cta__text h3{
+    margin:0 0 10px;
+    color:#fff;
+    font-size:clamp(18px,2vw,22px);
+    font-weight:600;
+    line-height:1.25;
+  }
+  .ng-cta__link{
+    color:#c9f24a;
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+  }
+  .ng-cta__link:hover{text-decoration:underline;}
+
+  /* ---------- "See full portfolio" link card ---------- */
+  .ng-card--link{
+    background:transparent;
+    padding:6px 2px 0;
+    opacity:0;                   /* animated in */
+    transform:translateY(24px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .ng-card--link.is-in{opacity:1;transform:translateY(0);}
+  .ng-card--link a{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:var(--ink);
+    font-size:16px;
+    font-weight:600;
+    text-decoration:underline;
+    text-underline-offset:4px;
+  }
+  .ng-card--link a span{transition:transform .3s ease;}
+  .ng-card--link a:hover span{transform:translateY(3px);}
+
+  /* ---------- Responsive breakpoints ---------- */
+  /* Tablet: 3 columns */
+  @media (max-width:1024px){
+    .ng-masonry{column-count:3;}
+  }
+  /* Mobile: 2 columns */
+  @media (max-width:640px){
+    .ng-works{padding:44px 14px;}
+    .ng-masonry{column-count:2;--gap:12px;column-gap:12px;}
+    .ng-card--quote{padding:16px 14px;gap:10px;}
+    .ng-quote__text{font-size:12.5px;}
+    .ng-quote__author img{width:32px;height:32px;}
+  }
+  /* Very small phones: keep 2 but tighten */
+  @media (max-width:360px){
+    .ng-quote__text{font-size:12px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ng-card,.ng-card--link{opacity:1!important;transform:none!important;transition:none!important;}
+    .ng-vidwrap{transition:none!important;}
+  }
+</style>
+
+<script>
+(function(){
+  var cards = document.querySelectorAll('#ng-works [data-anim]');
+
+  // Staggered scroll-reveal
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var el = e.target;
+          var delay = (el.dataset.i || 0) * 60;
+          setTimeout(function(){ el.classList.add('is-in'); }, delay);
+          io.unobserve(el);
+        }
+      });
+    }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+
+    cards.forEach(function(c,i){ c.dataset.i = i % 8; io.observe(c); });
+  } else {
+    cards.forEach(function(c){ c.classList.add('is-in'); });
+  }
+
+  // Portfolio clips are lazy-loaded Vimeo iframes: loading="lazy" on each
+  // iframe defers offscreen loads, and Vimeo's background player manages
+  // its own play state once loaded — no manual play/pause wiring needed.
+})();
+</script>
+
+
+<!-- ===================== journey-section.html ===================== -->
+<!-- ============================================================
+     JOURNEY / ABOUT SECTION — "Hey! I'm Ahmad."
+     Editorial layout: left labels · center narrative · right labels
+     + sticky green "Let's talk" CTA card.
+     Animations: heading word reveal, row fade/slide-in on scroll,
+     sticky CTA follows as you scroll the rows.
+     Responsive: desktop 3-col · tablet stacked · mobile single column.
+     Self-contained HTML + CSS + JS. Drop into an HTML widget.
+     ============================================================ -->
+
+
+<section class="ng-journey" id="ng-journey">
+  <div class="ng-journey__inner">
+
+    <!-- Heading -->
+    <h2 class="ng-jhead">
+      <span class="w"><em>Hey!</em></span>
+      <span class="w">I&rsquo;m</span>
+      <span class="w ng-jhead__avatar">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' rx='40' fill='%23111111'/%3E%3Ctext x='50%25' y='53%25' font-family='Poppins,Arial,sans-serif' font-size='26' font-weight='700' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'%3EAJ%3C/text%3E%3C/svg%3E" alt="Ahmad Jan">
+      </span>
+      <span class="w">Ahmad.</span>
+    </h2>
+
+    <!-- Rows -->
+    <div class="ng-jbody">
+
+      <!-- ROW 1 -->
+      <div class="ng-jrow" data-row>
+        <div class="ng-jrow__left"><span class="ng-label">Past</span></div>
+        <div class="ng-jrow__mid">
+          <span class="ng-label ng-label--mid">Dream</span>
+          <p class="ng-p ng-p--muted"><span class="hi">Funny enough,</span> I didn&rsquo;t start out editing ads at all — I came from a completely different field. Video was just my way to <span class="hi">unplug from work.</span></p>
+          <p class="ng-p"><span class="hi">I made the jump into full-time creative work and never looked back.</span> <span class="muted">Betting on yourself actually pays off.</span></p>
+        </div>
+        <div class="ng-jrow__right"><span class="ng-label">Love</span></div>
+      </div>
+
+      <!-- ROW 2 -->
+      <div class="ng-jrow" data-row>
+        <div class="ng-jrow__left"><span class="ng-label">Passion</span></div>
+        <div class="ng-jrow__mid">
+          <span class="ng-label ng-label--mid">XP</span>
+          <p class="ng-p"><span class="muted">At this point, I&rsquo;ve worked with</span> 60+ DTC brands, created 5k+ ad iterations, <span class="muted">and still love every second of it.</span></p>
+          <p class="ng-p"><span class="muted">Not a freelancer.<br>Still not an agency.</span><br>But a niche creative partner.</p>
+        </div>
+        <div class="ng-jrow__right"><span class="ng-label">Future</span></div>
+      </div>
+
+      <!-- ROW 3 -->
+      <div class="ng-jrow" data-row>
+        <div class="ng-jrow__left"><span class="ng-label">Trust</span></div>
+        <div class="ng-jrow__mid">
+          <span class="ng-label ng-label--mid">Partner</span>
+          <p class="ng-p"><span class="muted">If you&rsquo;re looking for mass-produced, trend-chasing edits — I&rsquo;m probably not your guy.</span> But if you care about structured storytelling, strategic visuals, and ROI-backed performance — then we might get along. I&rsquo;m in this for the long game.</p>
+          <p class="ng-p">I care about the people I work with as much as the work itself.</p>
+          <p class="ng-p ng-p--muted">Working remotely with brands worldwide.</p>
+        </div>
+        <div class="ng-jrow__right">
+          <!-- sticky CTA card -->
+          <a href="#ng-form" class="ng-cta-card" data-cta>
+            <span class="ng-cta-card__tag"><i></i>CTA</span>
+            <span class="ng-cta-card__label">Let&rsquo;s talk</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .ng-journey{
+    --ink:#161616;
+    --muted:#a2a7ad;
+    --line:#e9e9ec;
+    --green:#c6f024;
+    background:#fff;
+    padding:80px 24px 96px;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-journey *{box-sizing:border-box;}
+  .ng-journey__inner{max-width:1080px;margin:0 auto;}
+
+  /* ---------- Heading ---------- */
+  .ng-jhead{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:.28em;
+    margin:0 0 90px;
+    font-size:clamp(28px,4.6vw,44px);
+    font-weight:600;
+    color:var(--ink);
+    letter-spacing:-.01em;
+  }
+  .ng-jhead em{font-style:italic;font-weight:600;}
+  .ng-jhead .w{
+    display:inline-flex;
+    align-items:center;
+    opacity:0;
+    transform:translateY(30px);
+    animation:jRise .8s cubic-bezier(.44,0,.09,1) forwards;
+    animation-play-state:paused;   /* triggered by JS when in view */
+  }
+  .ng-jhead .w:nth-child(1){animation-delay:.00s}
+  .ng-jhead .w:nth-child(2){animation-delay:.10s}
+  .ng-jhead .w:nth-child(3){animation-delay:.20s}
+  .ng-jhead .w:nth-child(4){animation-delay:.30s}
+  .ng-jhead__avatar img{
+    width:1.55em;height:1.05em;border-radius:999px;object-fit:cover;
+    display:block;box-shadow:0 4px 14px rgba(0,0,0,.14);
+  }
+
+  /* ---------- Rows layout ---------- */
+  .ng-jrow{
+    display:grid;
+    grid-template-columns:1fr 2.1fr 1fr;
+    gap:24px;
+    padding:44px 0;
+    border-top:1px solid var(--line);
+  }
+  .ng-jrow:first-child{border-top:none;}
+
+  .ng-label{
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.06em;
+    color:var(--ink);
+    text-transform:capitalize;
+  }
+  .ng-jrow__right{text-align:right;}
+  .ng-jrow__right .ng-label{color:var(--ink);}
+  .ng-label--mid{display:block;margin-bottom:18px;}
+
+  .ng-jrow__mid{max-width:440px;}
+  .ng-p{
+    margin:0 0 18px;
+    font-size:15px;
+    line-height:1.62;
+    font-weight:500;
+    color:var(--ink);
+  }
+  .ng-p:last-child{margin-bottom:0;}
+  .ng-p .muted, .ng-p--muted{color:var(--muted);}
+  .ng-p .hi{color:var(--ink);font-weight:600;}
+
+  /* ---------- Scroll reveal for rows (Framer-style fade + rise) ---------- */
+  .ng-jrow__left,.ng-jrow__mid,.ng-jrow__right{
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity .8s cubic-bezier(.44,0,.09,1), transform .8s cubic-bezier(.44,0,.09,1);
+    will-change:opacity, transform;
+  }
+  .ng-jrow.is-in .ng-jrow__left {transition-delay:.00s;opacity:1;transform:translateY(0);}
+  .ng-jrow.is-in .ng-jrow__mid  {transition-delay:.08s;opacity:1;transform:translateY(0);}
+  .ng-jrow.is-in .ng-jrow__right{transition-delay:.16s;opacity:1;transform:translateY(0);}
+
+  /* ---------- Sticky green CTA card ---------- */
+  .ng-jrow__right{position:relative;}
+  .ng-cta-card{
+    position:sticky;
+    top:calc(50vh - 130px);       /* stays centered-ish while scrolling */
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    width:100%;
+    max-width:150px;
+    margin-left:auto;
+    aspect-ratio:3/4.2;
+    padding:16px;
+    border-radius:20px;
+    background:var(--green);
+    text-decoration:none;
+    box-shadow:0 18px 40px rgba(150,190,20,.28);
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .ng-cta-card:hover{transform:translateY(-4px);box-shadow:0 24px 50px rgba(150,190,20,.4);}
+  .ng-cta-card__tag{
+    align-self:flex-end;
+    display:inline-flex;align-items:center;gap:6px;
+    background:#111;color:#fff;
+    font-size:11px;font-weight:600;
+    padding:5px 11px;border-radius:999px;
+  }
+  .ng-cta-card__tag i{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;}
+  .ng-cta-card__label{
+    color:#1a1a1a;font-size:16px;font-weight:600;text-decoration:underline;text-underline-offset:3px;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+
+  /* Tablet ≤ 900px: drop the outer side labels into the flow,
+     keep a 2-col feel (label + text), CTA becomes inline */
+  @media (max-width:900px){
+    .ng-journey{padding:60px 20px 72px;}
+    .ng-jhead{margin-bottom:60px;}
+    .ng-jrow{
+      grid-template-columns:120px 1fr;
+      gap:18px;
+      padding:36px 0;
+    }
+    .ng-jrow__mid{grid-column:2;max-width:none;}
+    .ng-jrow__left{grid-column:1;grid-row:1;}
+    /* right-side labels move under the left label */
+    .ng-jrow__right{
+      grid-column:1;grid-row:2;
+      text-align:left;
+    }
+    .ng-jrow__right .ng-label{color:var(--muted);}
+    /* CTA card: un-stick, sit in the text column */
+    .ng-cta-card{
+      position:static;
+      max-width:160px;
+      margin:22px 0 0;
+      aspect-ratio:3/3.4;
+    }
+    /* place the CTA row's card below the text nicely */
+    .ng-jrow:last-child{grid-template-columns:120px 1fr;}
+    .ng-jrow:last-child .ng-jrow__right{grid-column:2;grid-row:auto;}
+  }
+
+  /* Mobile ≤ 560px: single column, labels stacked above text */
+  @media (max-width:560px){
+    .ng-journey{padding:48px 16px 60px;}
+    .ng-jhead{
+      font-size:clamp(24px,7vw,32px);
+      margin-bottom:44px;
+      gap:.24em;
+    }
+    .ng-jrow{
+      grid-template-columns:1fr;
+      gap:10px;
+      padding:30px 0;
+    }
+    .ng-jrow__left,.ng-jrow__right,.ng-jrow__mid{grid-column:1;}
+    .ng-jrow__left{grid-row:1;}
+    .ng-jrow__mid{grid-row:2;}
+    .ng-jrow:last-child .ng-jrow__right{grid-row:3;}
+    .ng-label{color:var(--muted)!important;font-size:12px;}
+    .ng-label--mid{margin-bottom:12px;color:var(--ink)!important;}
+    .ng-p{font-size:14.5px;}
+    .ng-cta-card{max-width:100%;aspect-ratio:auto;flex-direction:row;align-items:center;padding:18px;margin-top:18px;}
+    .ng-cta-card__label{font-size:17px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ng-jhead .w,
+    .ng-jrow__left,.ng-jrow__mid,.ng-jrow__right{
+      opacity:1!important;transform:none!important;animation:none!important;transition:none!important;
+    }
+  }
+
+  @keyframes jRise{to{opacity:1;transform:translateY(0);}}
+</style>
+
+<script>
+(function(){
+  var sec = document.getElementById('ng-journey');
+
+  // Heading word reveal when heading enters view
+  var head = sec.querySelector('.ng-jhead');
+  var rows = sec.querySelectorAll('[data-row]');
+
+  if('IntersectionObserver' in window){
+    var headIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          head.querySelectorAll('.w').forEach(function(w){
+            w.style.animationPlayState = 'running';
+          });
+          headIO.disconnect();
+        }
+      });
+    }, {threshold:.4});
+    headIO.observe(head);
+
+    var rowIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-in'); rowIO.unobserve(e.target); }
+      });
+    }, {threshold:.2, rootMargin:'0px 0px -60px 0px'});
+    rows.forEach(function(r){ rowIO.observe(r); });
+  } else {
+    head.querySelectorAll('.w').forEach(function(w){w.style.opacity=1;w.style.transform='none';});
+    rows.forEach(function(r){ r.classList.add('is-in'); });
+  }
+})();
+</script>
+
+
+<!-- ===================== portfolio-section.html ===================== -->
+<!-- ============================================================
+     PORTFOLIO SECTION — logo marquee + drifting word-cloud
+     Row 1: continuous logo strip (auto-scroll, loops seamlessly)
+     Below: faint category words in multi-speed marquee rows,
+            with a solid "Portfolio" label centered on top.
+     Pure CSS marquees (no JS needed for motion) + inline styles.
+     Responsive across desktop / tablet / mobile.
+     Swap logo <img> src and the word list as needed.
+     ============================================================ -->
+
+
+<section class="ng-portfolio" id="ng-portfolio">
+
+  <!-- ============ LOGO MARQUEE ============ -->
+  <div class="ng-logos" aria-label="Client logos">
+    <div class="ng-logos__track">
+      <!-- group (duplicated below for seamless loop) -->
+      <!-- Placeholder client wordmarks — swap for Ahmad's real client logos when available -->
+      <div class="ng-logos__group">
+        <span class="ng-logo-chip">Bloom &amp; Co.</span>
+        <span class="ng-logo-chip">Nordholt</span>
+        <span class="ng-logo-chip">Verve Supply</span>
+        <span class="ng-logo-chip">Lumen Goods</span>
+        <span class="ng-logo-chip">Pathwell</span>
+        <span class="ng-logo-chip">Norrsken</span>
+        <span class="ng-logo-chip">Basecamp Gear</span>
+        <span class="ng-logo-chip">Fettle Foods</span>
+        <span class="ng-logo-chip">Kindred Pet Co.</span>
+        <span class="ng-logo-chip">Solace Home</span>
+        <span class="ng-logo-chip">Maren Studio</span>
+        <span class="ng-logo-chip">Northfield</span>
+        <span class="ng-logo-chip">Arlo &amp; Co.</span>
+      </div>
+      <!-- duplicate for seamless loop (aria-hidden) -->
+      <div class="ng-logos__group" aria-hidden="true">
+        <span class="ng-logo-chip">Bloom &amp; Co.</span>
+        <span class="ng-logo-chip">Nordholt</span>
+        <span class="ng-logo-chip">Verve Supply</span>
+        <span class="ng-logo-chip">Lumen Goods</span>
+        <span class="ng-logo-chip">Pathwell</span>
+        <span class="ng-logo-chip">Norrsken</span>
+        <span class="ng-logo-chip">Basecamp Gear</span>
+        <span class="ng-logo-chip">Fettle Foods</span>
+        <span class="ng-logo-chip">Kindred Pet Co.</span>
+        <span class="ng-logo-chip">Solace Home</span>
+        <span class="ng-logo-chip">Maren Studio</span>
+        <span class="ng-logo-chip">Northfield</span>
+        <span class="ng-logo-chip">Arlo &amp; Co.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ WORD-CLOUD + PORTFOLIO LABEL ============ -->
+  <div class="ng-wordcloud">
+
+    <!-- Row A → drifts left -->
+    <div class="ng-wc-row ng-wc-row--a">
+      <div class="ng-wc-track ng-wc-track--left">
+        <span>Garden</span><span>Apps</span><span>Health</span><span>Video</span><span>Creative</span><span>Fashion</span><span>Sports</span><span>Food</span><span>Home</span><span>Health</span>
+        <span aria-hidden="true">Garden</span><span aria-hidden="true">Apps</span><span aria-hidden="true">Health</span><span aria-hidden="true">Video</span><span aria-hidden="true">Creative</span><span aria-hidden="true">Fashion</span><span aria-hidden="true">Sports</span><span aria-hidden="true">Food</span><span aria-hidden="true">Home</span><span aria-hidden="true">Health</span>
+      </div>
+    </div>
+
+    <!-- Row B (big) → drifts right -->
+    <div class="ng-wc-row ng-wc-row--b">
+      <div class="ng-wc-track ng-wc-track--right">
+        <span>Apparel</span><span>Kids</span><span>Pet</span><span>Beauty</span><span>Outdoor</span><span>Apparel</span><span>Kids</span><span>Pet</span><span>Beauty</span><span>Outdoor</span>
+        <span aria-hidden="true">Apparel</span><span aria-hidden="true">Kids</span><span aria-hidden="true">Pet</span><span aria-hidden="true">Beauty</span><span aria-hidden="true">Outdoor</span><span aria-hidden="true">Apparel</span><span aria-hidden="true">Kids</span><span aria-hidden="true">Pet</span><span aria-hidden="true">Beauty</span><span aria-hidden="true">Outdoor</span>
+      </div>
+    </div>
+
+    <!-- Row C → drifts left -->
+    <div class="ng-wc-row ng-wc-row--c">
+      <div class="ng-wc-track ng-wc-track--left">
+        <span>Garden</span><span>Books</span><span>Home</span><span>Jewelry</span><span>Production</span><span>Food</span><span>Electronics</span><span>Media</span><span>Sports</span>
+        <span aria-hidden="true">Garden</span><span aria-hidden="true">Books</span><span aria-hidden="true">Home</span><span aria-hidden="true">Jewelry</span><span aria-hidden="true">Production</span><span aria-hidden="true">Food</span><span aria-hidden="true">Electronics</span><span aria-hidden="true">Media</span><span aria-hidden="true">Sports</span>
+      </div>
+    </div>
+
+    <!-- Centered solid label -->
+    <div class="ng-wc-label"><span>Portfolio</span></div>
+  </div>
+</section>
+
+<style>
+  .ng-portfolio{
+    --ink:#121212;
+    --ghost:#ececec;      /* faint word color */
+    background:#fff;
+    padding:56px 0 72px;
+    overflow:hidden;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-portfolio *{box-sizing:border-box;}
+
+  /* ---------- Logo marquee ---------- */
+  .ng-logos{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+            mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  }
+  .ng-logos__track{
+    display:flex;
+    width:max-content;
+    animation:ngScrollX 42s linear infinite;
+  }
+  .ng-logos__group{
+    display:flex;
+    align-items:center;
+    gap:clamp(38px,6vw,84px);
+    padding-right:clamp(38px,6vw,84px);
+    flex:0 0 auto;
+  }
+  .ng-logo-chip{
+    font-size:clamp(15px,1.6vw,19px);
+    font-weight:700;
+    letter-spacing:-.01em;
+    color:#3a3d42;
+    opacity:.5;
+    white-space:nowrap;
+    flex:0 0 auto;
+    transition:opacity .3s ease;
+  }
+  .ng-logos:hover .ng-logos__track{animation-play-state:paused;}
+  .ng-logo-chip:hover{opacity:1;}
+
+  /* ---------- Word cloud (scroll-driven parallax) ---------- */
+  .ng-wordcloud{
+    position:relative;
+    margin-top:48px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    user-select:none;
+  }
+  .ng-wc-row{overflow:hidden;width:100%;}
+  .ng-wc-track{
+    display:flex;
+    width:max-content;
+    white-space:nowrap;
+    gap:.4em;
+    font-weight:700;
+    color:var(--ghost);
+    letter-spacing:-.02em;
+    line-height:1.05;
+    will-change:transform;
+    /* position is set by JS on scroll; no CSS animation */
+  }
+  .ng-wc-track span{padding:0 .18em;}
+
+  /* row sizes */
+  .ng-wc-row--a .ng-wc-track{font-size:clamp(34px,6.6vw,74px);}
+  .ng-wc-row--b .ng-wc-track{font-size:clamp(54px,11vw,120px);}
+  .ng-wc-row--c .ng-wc-track{font-size:clamp(34px,6.6vw,74px);}
+
+  /* Solid "Portfolio" label on top */
+  .ng-wc-label{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .ng-wc-label span{
+    font-size:clamp(54px,11vw,120px);
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:-.02em;
+    line-height:1;
+    background:#fff;              /* mask the faint words behind it */
+    padding:0 .28em;
+    border-radius:8px;
+  }
+
+  /* ---------- Keyframes ---------- */
+  @keyframes ngScrollX{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}     /* logo track holds 2 groups → -50% loops seamlessly */
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:768px){
+    .ng-portfolio{padding:40px 0 52px;}
+    .ng-logo-chip{font-size:15px;}
+    .ng-wordcloud{margin-top:34px;gap:2px;}
+  }
+  @media (max-width:480px){
+    .ng-logo-chip{font-size:13px;}
+    .ng-wc-label span{padding:0 .18em;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ng-logos__track{animation:none!important;}
+    .ng-logos{mask-image:none;-webkit-mask-image:none;}
+    /* JS also skips parallax when reduced-motion is set */
+  }
+</style>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+
+  var section = document.getElementById('ng-portfolio');
+  // Each row: [element, speed, direction]  (direction: -1 moves left, +1 moves right as you scroll down)
+  var rows = [
+    { el: section.querySelector('.ng-wc-row--a .ng-wc-track'), speed: 0.18, dir: -1 },
+    { el: section.querySelector('.ng-wc-row--b .ng-wc-track'), speed: 0.30, dir:  1 },
+    { el: section.querySelector('.ng-wc-row--c .ng-wc-track'), speed: 0.22, dir: -1 }
+  ];
+
+  var ticking = false;
+
+  function update(){
+    var vh = window.innerHeight;
+    var rect = section.getBoundingClientRect();
+
+    // progress: how far the section has travelled through the viewport
+    // 0 when the section top hits the bottom of the viewport, grows as you scroll down
+    var progress = (vh - rect.top);
+
+    rows.forEach(function(r){
+      if(!r.el) return;
+      // base offset centers each row so words fill the width before/after moving
+      var offset = progress * r.speed * r.dir;
+      r.el.style.transform = 'translate3d(' + offset + 'px,0,0)';
+    });
+    ticking = false;
+  }
+
+  function onScroll(){
+    if(!ticking){
+      window.requestAnimationFrame(update);
+      ticking = true;
+    }
+  }
+
+  // Center each track initially so there's word coverage on both sides
+  function center(){
+    rows.forEach(function(r){
+      if(!r.el) return;
+      var over = r.el.scrollWidth - r.el.parentElement.clientWidth;
+      // shift left by half the overflow so the middle is visible at rest
+      r.el.dataset.base = -(over/2);
+      r.el.style.marginLeft = (-(over/2)) + 'px';
+    });
+    update();
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', function(){ center(); });
+  center();
+  update();
+})();
+</script>
+
+
+<!-- ===================== works-grid-full.html ===================== -->
+<!-- ============================================================
+     FULL WORKS GRID — dense masonry
+     Card types: video · testimonial · colored promo/CTA
+     Columns:  desktop 5  ·  tablet 3  ·  mobile 2   (last column included)
+     Self-contained HTML + CSS + JS. Drop into an HTML widget.
+     Swap video URLs, testimonial text, avatars, promo copy & links.
+     ============================================================ -->
+
+
+<section class="ng-grid" id="ng-grid">
+  <div class="ng-grid__inner">
+    <div class="ng-masonry">
+
+      <!-- ===== Column-flow masonry; cards fill top→bottom across 5 columns ===== -->
+
+      <!-- Orange promo -->
+      <div class="ng-card ng-card--promo ng-promo--orange" data-anim>
+        <div class="ng-promo__badge">Skincare</div>
+        <h4>Skip the guesswork</h4>
+        <p>Glow starts here</p>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220451938?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Fast turnarounds, sharp taste, and he actually reads the brief. Rare combination and it shows in the finished cuts.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%2523dc2626%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3ETA%3C/text%3E%3C/svg%3E" alt="T. Alvarez">
+          <div><strong>T. Alvarez</strong><span>Creative Director, Lumen Goods</span></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448493?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448519?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Consistently strong edits for our PPC rotation — reliable, on-brand, and quick to iterate.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%25237c3aed%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3ERO%3C/text%3E%3C/svg%3E" alt="R. Okafor">
+          <div><strong>R. Okafor</strong><span>Head of Growth, Pathwell</span></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448591?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial (long) -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">If you want ads that perform and not just look nice, Ahmad is the guy. We saw a real lift within the first batch of creatives.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%25230891b2%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3EEL%3C/text%3E%3C/svg%3E" alt="E. Lindqvist">
+          <div><strong>E. Lindqvist</strong><span>Co-Founder, Norrsken Skincare</span></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448616?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Dark promo -->
+      <div class="ng-card ng-card--promo ng-promo--dark" data-anim>
+        <h4>Now hiring: remote, full-time, yours</h4>
+      </div>
+
+      <!-- Testimonial -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Skilled editor, clear communicator, and genuinely up to date on what's working on social right now. Already lined up our next batch.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%2523ca8a04%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3EDM%3C/text%3E%3C/svg%3E" alt="D. Marsh">
+          <div><strong>D. Marsh</strong><span>Performance Marketing Manager, Basecamp Gear</span></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448671?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Green promo -->
+      <div class="ng-card ng-card--promo ng-promo--green" data-anim>
+        <h4>Save 20% on your first order</h4>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448672?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Went well beyond the brief every single time. Experienced, easy to talk to, and the edits speak for themselves.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%252316a34a%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3ENO%3C/text%3E%3C/svg%3E" alt="N. Osei">
+          <div><strong>N. Osei</strong><span>CEO, Fettle Foods</span></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448585?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Meticulous with detail and easy to brief. Our Facebook creatives have never looked this tight.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%2523db2777%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3EPA%3C/text%3E%3C/svg%3E" alt="P. Aoki">
+          <div><strong>P. Aoki</strong><span>Brand Manager, Kindred Pet Co.</span></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448699?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Testimonial -->
+      <div class="ng-card ng-card--quote" data-anim>
+        <span class="ng-quote__mark">&rdquo;</span>
+        <p class="ng-quote__text">Helped us build a content library that actually performs across every channel we run, not just one.</p>
+        <div class="ng-quote__author">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2780%27%20height%3D%2780%27%3E%3Crect%20width%3D%2780%27%20height%3D%2780%27%20rx%3D%2740%27%20fill%3D%27%25234338ca%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2753%25%27%20font-family%3D%27Poppins%2CArial%2Csans-serif%27%20font-size%3D%2728%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3ECB%3C/text%3E%3C/svg%3E" alt="C. Bianchi">
+          <div><strong>C. Bianchi</strong><span>Marketing Director, Solace Home</span></div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448768?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+      <!-- Video -->
+      <a class="ng-card ng-card--video" href="#" data-anim>
+        <div class="ng-vidwrap" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448755?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" loading="lazy" tabindex="-1" title="Ahmad Jan portfolio clip"></iframe></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .ng-grid{
+    --ink:#181818;
+    --muted:#8a8f96;
+    --radius:16px;
+    --gap:14px;
+    background:#fff;
+    padding:56px 20px 72px;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-grid *{box-sizing:border-box;}
+  .ng-grid__inner{max-width:1200px;margin:0 auto;}
+
+  /* ---------- Masonry (CSS columns) ---------- */
+  .ng-masonry{
+    column-count:5;          /* desktop — last column included */
+    column-gap:var(--gap);
+  }
+  .ng-card{
+    display:block;
+    width:100%;
+    margin:0 0 var(--gap);
+    break-inside:avoid;
+    -webkit-column-break-inside:avoid;
+    border-radius:var(--radius);
+    overflow:hidden;
+    position:relative;
+    opacity:0;
+    transform:translateY(22px);
+    transition:opacity .6s ease, transform .6s cubic-bezier(.44,0,.09,1);
+  }
+  .ng-card.is-in{opacity:1;transform:translateY(0);}
+
+  /* Video */
+  .ng-card--video{background:#eee;line-height:0;cursor:pointer;}
+  .ng-vidwrap{
+    width:100%;aspect-ratio:9/16;display:block;position:relative;overflow:hidden;
+    transition:transform .5s ease;
+  }
+  .ng-vidwrap iframe{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;pointer-events:none;
+  }
+  .ng-card--video:hover .ng-vidwrap{transform:scale(1.04);}
+
+  /* Testimonial */
+  .ng-card--quote{
+    background:#f4f4f5;
+    padding:18px 16px;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .ng-quote__mark{font-size:30px;line-height:.5;color:var(--ink);font-weight:700;align-self:flex-end;opacity:.85;}
+  .ng-quote__text{margin:0;color:#2a2a2a;font-size:13px;font-weight:500;line-height:1.5;}
+  .ng-quote__author{display:flex;align-items:center;gap:9px;margin-top:auto;}
+  .ng-quote__author img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:0 0 auto;}
+  .ng-quote__author strong{display:block;font-size:12px;color:var(--ink);font-weight:600;}
+  .ng-quote__author span{display:block;font-size:11px;color:var(--muted);line-height:1.3;margin-top:1px;}
+
+  /* Colored promo cards */
+  .ng-card--promo{
+    padding:18px 16px;
+    display:flex;flex-direction:column;justify-content:flex-end;gap:8px;
+    min-height:150px;
+    text-decoration:none;
+  }
+  .ng-card--promo h4{margin:0;font-size:16px;font-weight:700;line-height:1.2;}
+  .ng-card--promo p{margin:0;font-size:12.5px;font-weight:500;opacity:.85;}
+  .ng-promo__badge{
+    align-self:flex-start;
+    font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:999px;
+    background:rgba(0,0,0,.25);color:#fff;margin-bottom:auto;
+  }
+  .ng-promo--green{background:#c6f024;}
+  .ng-promo--green h4{color:#14210a;}
+  .ng-promo--dark{background:#0e0e0e;aspect-ratio:3/4.4;}
+  .ng-promo--dark h4{color:#fff;}
+  .ng-promo--orange{background:#e8722e;aspect-ratio:3/4.2;}
+  .ng-promo--orange h4,.ng-promo--orange p{color:#fff;}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:1024px){         /* tablet → 3 columns */
+    .ng-masonry{column-count:3;}
+  }
+  @media (max-width:640px){          /* mobile → 2 columns */
+    .ng-grid{padding:40px 12px 56px;}
+    .ng-masonry{column-count:2;--gap:10px;column-gap:10px;}
+    .ng-card--quote{padding:14px 12px;gap:9px;}
+    .ng-quote__text{font-size:12px;}
+    .ng-quote__author img{width:30px;height:30px;}
+    .ng-card--promo h4{font-size:14px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ng-card{opacity:1!important;transform:none!important;transition:none!important;}
+    .ng-vidwrap{transition:none!important;}
+  }
+</style>
+
+<script>
+(function(){
+  var cards = document.querySelectorAll('#ng-grid [data-anim]');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var el = e.target;
+          setTimeout(function(){ el.classList.add('is-in'); }, (el.dataset.i||0)*50);
+          io.unobserve(el);
+        }
+      });
+    }, {threshold:.1, rootMargin:'0px 0px -40px 0px'});
+    cards.forEach(function(c,i){ c.dataset.i = i % 10; io.observe(c); });
+  } else {
+    cards.forEach(function(c){ c.classList.add('is-in'); });
+  }
+
+  // Portfolio clips are lazy-loaded Vimeo iframes: loading="lazy" on each
+  // iframe defers offscreen loads, and Vimeo's background player manages
+  // its own play state once loaded — no manual play/pause wiring needed.
+})();
+</script>
+
+
+<!-- ===================== core-principles-section.html ===================== -->
+<!-- ============================================================
+     CORE PRINCIPLES SECTION
+     Heading + 3 labelled blocks:
+       · ATTITUDE  — 3 light cards
+       · WORKFLOW  — 3 dark numbered cards (with keyword tags)
+       · STATEMENT — wide light card + green CTA card
+     Animations: heading word reveal, cards fade-rise on scroll.
+     Responsive: desktop 3-up · tablet 3-up (tighter) · mobile 1-up.
+     Self-contained HTML + CSS + JS.
+     ============================================================ -->
+
+
+<section class="ng-core" id="ng-core">
+  <div class="ng-core__inner">
+
+    <!-- Heading -->
+    <h2 class="ng-core__head">
+      <span class="w"><em>Core</em></span>
+      <span class="w">Principles</span>
+    </h2>
+    <p class="ng-core__sub">
+      <span class="muted">Every creator has their own code — for both work and ethics.</span><br>
+      <strong>So do I.</strong>
+    </p>
+
+    <!-- ===== ATTITUDE ===== -->
+    <div class="ng-block" data-block>
+      <div class="ng-tab"><i class="ng-tab__dot"></i>Attitude</div>
+      <div class="ng-row ng-row--3">
+        <div class="ng-c ng-c--light" data-anim>
+          <h4>Narrow focus</h4>
+          <p>I believe in doing one thing exceptionally well: creating ads that convert. That narrow focus keeps every project optimized for ROAS and growth.</p>
+        </div>
+        <div class="ng-c ng-c--light" data-anim>
+          <h4>Performance is a key</h4>
+          <p>Every ad is built around results. I track performance, iterate on what works, and make sure your spend turns into real growth.</p>
+        </div>
+        <div class="ng-c ng-c--light" data-anim>
+          <h4>Fast delivery</h4>
+          <p>I turn ads around fast — typically within a few business days — without cutting corners on quality, so you stay ahead of the competition.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== WORKFLOW ===== -->
+    <div class="ng-block" data-block>
+      <div class="ng-tab"><i class="ng-tab__dot"></i>Workflow</div>
+      <div class="ng-row ng-row--3">
+
+        <div class="ng-c ng-c--dark" data-anim>
+          <span class="ng-c__num">1</span>
+          <div class="ng-tags">
+            <span>BRAND</span><span>MARKET</span><span>AUDIENCE</span><span>CONCEPT</span><span>IDEAS</span><span>EXECUTION</span>
+          </div>
+          <h4 class="ng-c__title">Onboarding</h4>
+          <p>Great work starts with listening, so I begin by learning what makes your brand tick.</p>
+          <span class="ng-c__step">BRIEF</span>
+        </div>
+
+        <div class="ng-c ng-c--dark" data-anim>
+          <span class="ng-c__num">2</span>
+          <div class="ng-bricks" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <h4 class="ng-c__title">Post-production</h4>
+          <p>Once I understand your brand and goals, I get straight into building the ads.</p>
+        </div>
+
+        <div class="ng-c ng-c--dark" data-anim>
+          <span class="ng-c__num">3</span>
+          <div class="ng-tags ng-tags--metrics">
+            <span>HOOK</span><span>HOLD</span><span>CTR</span><span>CPA</span><span>ROAS</span>
+          </div>
+          <div class="ng-players" aria-hidden="true"><span>&#9654;</span><span>&#9654;</span><span>&#9654;</span></div>
+          <h4 class="ng-c__title">Launch &amp; Optimize</h4>
+          <p>I keep iterating on the creative so your ads keep earning their spend.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== STATEMENT ===== -->
+    <div class="ng-block" data-block>
+      <div class="ng-tab"><i class="ng-tab__dot"></i>Statement</div>
+      <div class="ng-row ng-row--statement">
+        <div class="ng-c ng-c--light ng-c--wide" data-anim>
+          <h4 class="ng-c__big">No &ldquo;Overpromising.&rdquo; Ever.</h4>
+          <p>Clear, consistent communication is non-negotiable for me. I set realistic expectations and deliver measurable results — no surprises, no gaps.</p>
+        </div>
+        <a href="#ng-form" class="ng-c ng-c--cta" data-anim>
+          <span class="ng-cta__tag"><i></i>CTA</span>
+          <span class="ng-cta__label">Let&rsquo;s talk</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .ng-core{
+    --ink:#151515;
+    --muted:#9aa0a6;
+    --line:#e6e6e9;
+    --green:#c6f024;
+    --radius:14px;
+    background:#f6f6f7;
+    padding:70px 22px 84px;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-core *{box-sizing:border-box;}
+  .ng-core__inner{max-width:1040px;margin:0 auto;}
+
+  /* Heading */
+  .ng-core__head{
+    margin:0;
+    font-size:clamp(34px,5.4vw,58px);
+    font-weight:700;line-height:1.02;color:var(--ink);letter-spacing:-.02em;
+    display:flex;flex-direction:column;
+  }
+  .ng-core__head em{font-style:italic;font-weight:700;}
+  .ng-core__head .w{
+    opacity:0;transform:translateY(26px);
+    animation:cRise .8s cubic-bezier(.44,0,.09,1) forwards;animation-play-state:paused;
+  }
+  .ng-core__head .w:nth-child(1){animation-delay:.00s}
+  .ng-core__head .w:nth-child(2){animation-delay:.10s}
+  .ng-core__sub{
+    margin:16px 0 0;font-size:15px;font-weight:600;line-height:1.5;color:var(--ink);
+  }
+  .ng-core__sub .muted{color:var(--muted);font-weight:500;}
+
+  /* Labelled tab */
+  .ng-block{margin-top:46px;border-top:1px solid var(--line);padding-top:24px;}
+  .ng-tab{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:#6b7075;margin-bottom:18px;
+  }
+  .ng-tab__dot{
+    width:13px;height:13px;border-radius:50%;border:1.5px solid #b9bdc2;
+    position:relative;flex:0 0 auto;
+  }
+  .ng-tab__dot::before,.ng-tab__dot::after{
+    content:"";position:absolute;background:#b9bdc2;
+  }
+  .ng-tab__dot::before{width:7px;height:1.4px;top:50%;left:50%;transform:translate(-50%,-50%);}
+  .ng-tab__dot::after{width:1.4px;height:7px;top:50%;left:50%;transform:translate(-50%,-50%);}
+
+  /* Rows */
+  .ng-row--3{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  }
+  .ng-row--statement{
+    display:grid;grid-template-columns:2fr 1fr;gap:16px;
+  }
+
+  /* Card base + reveal */
+  .ng-c{
+    border-radius:var(--radius);
+    opacity:0;transform:translateY(24px);
+    transition:opacity .7s cubic-bezier(.44,0,.09,1), transform .7s cubic-bezier(.44,0,.09,1);
+    will-change:opacity,transform;
+  }
+  .ng-c.is-in{opacity:1;transform:translateY(0);}
+
+  /* Light card */
+  .ng-c--light{
+    background:#fff;border:1px solid var(--line);
+    padding:22px 20px;
+  }
+  .ng-c--light h4{margin:0 0 12px;font-size:16px;font-weight:600;color:var(--ink);}
+  .ng-c--light p{margin:0;font-size:13px;font-weight:500;line-height:1.6;color:var(--muted);}
+
+  /* Dark workflow card */
+  .ng-c--dark{
+    background:#111;color:#fff;
+    padding:18px 18px 22px;
+    display:flex;flex-direction:column;
+    min-height:230px;position:relative;overflow:hidden;
+  }
+  .ng-c__num{
+    font-size:13px;font-weight:600;color:#8b9097;
+    position:absolute;top:16px;left:18px;
+  }
+  .ng-c__title{
+    margin:auto 0 8px;font-size:17px;font-weight:600;color:#fff;
+    position:absolute;top:16px;right:18px;text-align:right;
+  }
+  .ng-c--dark p{margin:0;font-size:12.5px;font-weight:500;line-height:1.55;color:#c7ccd2;max-width:56%;margin-top:auto;}
+  .ng-c__step{
+    align-self:flex-start;margin-top:14px;
+    font-size:10px;font-weight:600;letter-spacing:.1em;color:#0e0e0e;
+    background:#fff;padding:4px 9px;border-radius:5px;
+  }
+  /* keyword tag cluster */
+  .ng-tags{display:flex;flex-wrap:wrap;gap:5px;max-width:120px;margin:26px 0 0;}
+  .ng-tags span{
+    font-size:8.5px;font-weight:600;letter-spacing:.04em;
+    padding:3px 6px;border-radius:4px;background:#c6f024;color:#14210a;
+  }
+  .ng-tags--metrics span{background:#1d1d1d;color:#c6f024;border:1px solid #333;}
+  /* faux brick stack for card 2 */
+  .ng-bricks{display:grid;grid-template-columns:repeat(3,20px);gap:4px;margin:28px 0 0;}
+  .ng-bricks span{height:12px;background:#e8e8e8;border-radius:2px;opacity:.85;}
+  .ng-bricks span:nth-child(2){background:#bdbdbd;}
+  .ng-bricks span:nth-child(4){background:#d4d4d4;}
+  /* mini players for card 3 */
+  .ng-players{display:flex;gap:6px;margin:26px 0 0;}
+  .ng-players span{
+    width:26px;height:34px;border-radius:5px;background:#fff;color:#111;
+    display:flex;align-items:center;justify-content:center;font-size:11px;
+  }
+  .ng-players span:nth-child(2){transform:translateY(-4px);}
+
+  /* Statement */
+  .ng-c--wide{padding:26px 24px;display:flex;flex-direction:column;justify-content:center;}
+  .ng-c__big{margin:0 0 14px;font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);}
+  .ng-c--wide p{margin:0;font-size:13.5px;font-weight:500;line-height:1.6;color:var(--muted);}
+
+  .ng-c--cta{
+    background:var(--green);
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:18px;text-decoration:none;min-height:150px;
+    transition:opacity .7s, transform .7s, box-shadow .3s;
+  }
+  .ng-c--cta:hover{box-shadow:0 16px 36px rgba(150,190,20,.35);transform:translateY(-3px);}
+  .ng-cta__tag{
+    align-self:flex-end;display:inline-flex;align-items:center;gap:6px;
+    background:#111;color:#fff;font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px;
+  }
+  .ng-cta__tag i{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;}
+  .ng-cta__label{color:#1a1a1a;font-size:16px;font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+
+  /* Stagger reveal within a row */
+  .ng-row .ng-c:nth-child(2){transition-delay:.08s;}
+  .ng-row .ng-c:nth-child(3){transition-delay:.16s;}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .ng-core{padding:56px 18px 68px;}
+    .ng-row--3{gap:12px;}
+    .ng-c--light{padding:18px 16px;}
+    .ng-c--dark{min-height:210px;}
+  }
+  @media (max-width:620px){
+    .ng-row--3{grid-template-columns:1fr;}
+    .ng-row--statement{grid-template-columns:1fr;}
+    .ng-c--dark{min-height:200px;}
+    .ng-c--dark p{max-width:70%;}
+    .ng-c__title{position:static;text-align:left;margin:10px 0 8px;}
+    .ng-c__num{position:static;margin-bottom:6px;}
+    .ng-c--cta{min-height:120px;flex-direction:row;align-items:center;}
+    /* undo per-child stagger when stacked so they don't feel slow */
+    .ng-row .ng-c:nth-child(2),.ng-row .ng-c:nth-child(3){transition-delay:0s;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ng-core__head .w,.ng-c{opacity:1!important;transform:none!important;animation:none!important;transition:none!important;}
+  }
+
+  @keyframes cRise{to{opacity:1;transform:translateY(0);}}
+</style>
+
+<script>
+(function(){
+  var sec = document.getElementById('ng-core');
+  var head = sec.querySelector('.ng-core__head');
+  var cards = sec.querySelectorAll('[data-anim]');
+
+  if('IntersectionObserver' in window){
+    // heading words
+    var hIO = new IntersectionObserver(function(en){
+      en.forEach(function(e){
+        if(e.isIntersecting){
+          head.querySelectorAll('.w').forEach(function(w){w.style.animationPlayState='running';});
+          hIO.disconnect();
+        }
+      });
+    },{threshold:.5});
+    hIO.observe(head);
+
+    // cards
+    var cIO = new IntersectionObserver(function(en){
+      en.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-in'); cIO.unobserve(e.target); }
+      });
+    },{threshold:.15, rootMargin:'0px 0px -50px 0px'});
+    cards.forEach(function(c){ cIO.observe(c); });
+  } else {
+    head.querySelectorAll('.w').forEach(function(w){w.style.opacity=1;w.style.transform='none';});
+    cards.forEach(function(c){ c.classList.add('is-in'); });
+  }
+})();
+</script>
+
+
+<!-- ===================== contact-form-section.html ===================== -->
+<!-- ============================================================
+     CONTACT / FORM SECTION
+     Dark rounded panel:
+       · left  — green word column (POP/CRASH/HYPE… alternating italic),
+                 slow scroll-driven / marquee drift
+       · right — "I'm ready if you are" form (name, email, store link,
+                 budget min-max, ad videos min-max, terms, Send)
+     Responsive: word column hides on mobile, form goes full width.
+     Self-contained HTML + CSS + JS.
+     ============================================================ -->
+
+
+<section class="ng-form-sec" id="ng-form">
+  <div class="ng-panel">
+
+    <!-- LEFT: word column -->
+    <div class="ng-words" aria-hidden="true">
+      <div class="ng-words__track">
+        <span>SPARK</span><span class="i">CRAVE</span><span>POP</span><span>CRASH</span>
+        <span class="i">HYPE</span><span>BOOST</span><span>PUNCH</span><span class="i">VIRAL</span>
+        <span>FLARE</span><span>BUZZ</span><span class="i">SNAP</span><span>HOOK</span>
+        <span>HOLD</span><span class="i">VIEW</span>
+        <!-- duplicate for seamless loop -->
+        <span>SPARK</span><span class="i">CRAVE</span><span>POP</span><span>CRASH</span>
+        <span class="i">HYPE</span><span>BOOST</span><span>PUNCH</span><span class="i">VIRAL</span>
+        <span>FLARE</span><span>BUZZ</span><span class="i">SNAP</span><span>HOOK</span>
+        <span>HOLD</span><span class="i">VIEW</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: form -->
+    <div class="ng-form">
+      <h2 class="ng-form__title">I&rsquo;m <em>ready</em><br>if you are</h2>
+
+      <div class="ng-field">
+        <input type="text" placeholder="Name" autocomplete="name">
+      </div>
+      <div class="ng-field">
+        <input type="email" placeholder="Email" autocomplete="email">
+      </div>
+      <div class="ng-field">
+        <input type="url" placeholder="Shopify store link">
+      </div>
+
+      <div class="ng-range">
+        <label>Budget a video, $</label>
+        <div class="ng-range__pair">
+          <input type="number" placeholder="200">
+          <input type="number" placeholder="500">
+        </div>
+      </div>
+
+      <div class="ng-range">
+        <label>Ad videos a month</label>
+        <div class="ng-range__pair">
+          <input type="number" placeholder="5">
+          <input type="number" placeholder="20">
+        </div>
+      </div>
+
+      <p class="ng-terms">
+        By clicking this button you accept the
+        <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy.</a>
+      </p>
+
+      <button type="button" class="ng-send">Send</button>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .ng-form-sec{
+    --green:#c6f024;
+    --panel:#1c1c1c;
+    background:#f6f6f7;
+    padding:40px 20px 64px;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-form-sec *{box-sizing:border-box;}
+
+  .ng-panel{
+    max-width:1080px;margin:0 auto;
+    background:var(--panel);
+    border-radius:26px;
+    display:grid;grid-template-columns:1fr 1fr;
+    overflow:hidden;
+    min-height:520px;
+  }
+
+  /* ----- Word column ----- */
+  .ng-words{
+    position:relative;overflow:hidden;
+    padding:26px 0 26px 34px;
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent);
+            mask-image:linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent);
+  }
+  .ng-words__track{
+    display:flex;flex-direction:column;
+    animation:ngWordsUp 26s linear infinite;
+  }
+  .ng-words__track span{
+    font-size:clamp(40px,6vw,74px);
+    font-weight:800;line-height:1.02;color:var(--green);letter-spacing:-.01em;
+  }
+  .ng-words__track span.i{font-style:italic;}
+  .ng-words:hover .ng-words__track{animation-play-state:paused;}
+
+  /* ----- Form ----- */
+  .ng-form{padding:44px 44px 40px;display:flex;flex-direction:column;}
+  .ng-form__title{
+    margin:0 0 26px;color:#fff;font-size:clamp(28px,3.4vw,40px);
+    font-weight:700;line-height:1.08;letter-spacing:-.01em;
+  }
+  .ng-form__title em{font-style:italic;font-weight:700;}
+
+  .ng-field{margin-bottom:12px;}
+  .ng-field input{
+    width:100%;background:transparent;
+    border:1px solid #3a3a3a;border-radius:9px;
+    padding:13px 15px;color:#fff;font-size:14px;font-family:inherit;
+    transition:border-color .25s ease;
+  }
+  .ng-field input::placeholder{color:#7d7d7d;}
+  .ng-field input:focus{outline:none;border-color:var(--green);}
+
+  .ng-range{margin-bottom:12px;}
+  .ng-range label{display:block;color:#cfcfcf;font-size:12px;font-weight:600;margin-bottom:7px;}
+  .ng-range__pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .ng-range__pair input{
+    width:100%;background:transparent;border:1px solid #3a3a3a;border-radius:9px;
+    padding:11px 14px;color:#fff;font-size:14px;font-family:inherit;
+    transition:border-color .25s ease;
+  }
+  .ng-range__pair input::placeholder{color:#7d7d7d;}
+  .ng-range__pair input:focus{outline:none;border-color:var(--green);}
+  .ng-range__pair input::-webkit-outer-spin-button,
+  .ng-range__pair input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .ng-range__pair input[type=number]{-moz-appearance:textfield;}
+
+  .ng-terms{margin:6px 0 18px;font-size:11.5px;line-height:1.5;color:#6f6f6f;}
+  .ng-terms a{color:#cfcfcf;text-decoration:underline;text-underline-offset:2px;}
+
+  .ng-send{
+    width:100%;border:none;cursor:pointer;
+    background:var(--green);color:#14210a;
+    font-size:15px;font-weight:600;font-family:inherit;
+    padding:14px;border-radius:10px;
+    text-decoration:underline;text-underline-offset:3px;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .ng-send:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(150,190,20,.35);}
+
+  /* ----- Keyframes ----- */
+  @keyframes ngWordsUp{
+    from{transform:translateY(0);}
+    to{transform:translateY(-50%);}   /* two copies → seamless */
+  }
+
+  /* ----- Responsive ----- */
+  @media (max-width:820px){
+    .ng-panel{grid-template-columns:1fr;min-height:0;}
+    .ng-words{
+      max-height:160px;padding:18px 0 18px 24px;
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+              mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+    }
+    /* on mobile show words as a horizontal strip instead */
+    .ng-words__track{flex-direction:row;gap:24px;animation:ngWordsX 22s linear infinite;align-items:center;}
+    .ng-words__track span{font-size:44px;white-space:nowrap;}
+    .ng-form{padding:30px 22px 32px;}
+  }
+  @keyframes ngWordsX{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  @media (max-width:420px){
+    .ng-form-sec{padding:28px 12px 48px;}
+    .ng-panel{border-radius:20px;}
+    .ng-words{max-height:120px;}
+    .ng-words__track span{font-size:34px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ng-words__track{animation:none!important;}
+    .ng-words{mask-image:none;-webkit-mask-image:none;}
+  }
+</style>
+
+<script>
+(function(){
+  // Simple client-side validation feedback + placeholder submit.
+  var btn = document.querySelector('#ng-form .ng-send');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    var panel = document.querySelector('#ng-form .ng-form');
+    var name  = panel.querySelector('input[type=text]');
+    var email = panel.querySelector('input[type=email]');
+    var ok = true;
+    [name,email].forEach(function(inp){
+      if(!inp.value.trim()){ inp.style.borderColor = '#ff5a5f'; ok = false; }
+      else { inp.style.borderColor = ''; }
+    });
+    if(!ok) return;
+    // TODO: wire to your real endpoint / WPForms / email handler here.
+    btn.textContent = 'Sent ✓';
+    btn.style.pointerEvents = 'none';
+    setTimeout(function(){ btn.textContent = 'Send'; btn.style.pointerEvents=''; }, 2500);
+  });
+})();
+</script>
+
+
+<!-- ===================== faq-footer-section.html ===================== -->
+<!-- ============================================================
+     FAQ + FOOTER SECTION
+     · "Questions you might have" accordion (01–05, expandable)
+     · Footer: big faint repeating "Ahmad Jan", 2020–2026,
+       Terms/Privacy, floating metric pills (TOF/A/B/LTV/CTA),
+       back-to-top arrow.
+     Accordion animates open/close; pills float gently.
+     Responsive across all screens.
+     Self-contained HTML + CSS + JS.
+     ============================================================ -->
+
+
+<section class="ng-faq" id="ng-qa">
+  <div class="ng-faq__inner">
+
+    <h2 class="ng-faq__head">Questions <em>you might have</em></h2>
+
+    <div class="ng-acc">
+      <div class="ng-acc__item" data-faq>
+        <button class="ng-acc__q" type="button">
+          <span class="ng-acc__num">01</span>
+          <span class="ng-acc__text">Do you cover any additional advertising services?</span>
+          <span class="ng-acc__chev" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="ng-acc__a"><div class="ng-acc__a-inner">
+          <p>Yes — beyond editing, I can help with creative strategy, hook ideas, and scripting direction, then iterate based on how the ads actually perform. The goal is always ads that convert, not just clips that look nice.</p>
+        </div></div>
+      </div>
+
+      <div class="ng-acc__item" data-faq>
+        <button class="ng-acc__q" type="button">
+          <span class="ng-acc__num">02</span>
+          <span class="ng-acc__text">What makes you different?</span>
+          <span class="ng-acc__chev" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="ng-acc__a"><div class="ng-acc__a-inner">
+          <p>I hold myself to a set of core principles that set me apart in a pretty crowded field of creative and digital marketing.</p>
+          <p>Honesty and integrity sit at the center of everything I do. A good partnership is built on trust, transparency, and communication that doesn&rsquo;t go quiet mid-project.</p>
+        </div></div>
+      </div>
+
+      <div class="ng-acc__item" data-faq>
+        <button class="ng-acc__q" type="button">
+          <span class="ng-acc__num">03</span>
+          <span class="ng-acc__text">How do we know your ads will work for our brand?</span>
+          <span class="ng-acc__chev" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="ng-acc__a"><div class="ng-acc__a-inner">
+          <p>I&rsquo;ve worked with 60+ DTC brands and created 5k+ ad iterations. I lean on that experience plus your performance data — we test, read the numbers, and iterate until the creative earns its spend.</p>
+        </div></div>
+      </div>
+
+      <div class="ng-acc__item" data-faq>
+        <button class="ng-acc__q" type="button">
+          <span class="ng-acc__num">04</span>
+          <span class="ng-acc__text">What does your pricing look like?</span>
+          <span class="ng-acc__chev" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="ng-acc__a"><div class="ng-acc__a-inner">
+          <p>It depends on volume and scope. Share your budget per video and how many ads you need a month in the form above, and I&rsquo;ll get back to you with a tailored quote.</p>
+        </div></div>
+      </div>
+
+      <div class="ng-acc__item" data-faq>
+        <button class="ng-acc__q" type="button">
+          <span class="ng-acc__num">05</span>
+          <span class="ng-acc__text">Why wouldn&rsquo;t we just hire a full-time video editor or marketing agency?</span>
+          <span class="ng-acc__chev" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="ng-acc__a"><div class="ng-acc__a-inner">
+          <p>A full-time hire is fixed cost and one skill set; an agency means overhead and extra layers between you and the work. I&rsquo;m a focused creative partner — senior-level ad editing, fast turnaround, and real skin in the game on performance, without the long-term commitment.</p>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="ng-footer">
+    <!-- faint repeating name -->
+    <div class="ng-foot-bg" aria-hidden="true">
+      <span>Ahmad Jan</span><span>Ahmad Jan</span><span>Ahmad Jan</span>
+      <span>Ahmad Jan</span><span>Ahmad Jan</span><span>Ahmad Jan</span>
+    </div>
+
+    <!-- floating metric pills -->
+    <span class="ng-fpill" style="--x:64%;--y:16%;"><i style="background:#b6f24a"></i>TOF</span>
+    <span class="ng-fpill" style="--x:22%;--y:64%;"><i style="background:#5b5bff"></i>A/B</span>
+    <span class="ng-fpill" style="--x:40%;--y:88%;"><i style="background:#2fe6a0"></i>LTV</span>
+    <span class="ng-fpill" style="--x:82%;--y:74%;"><i style="background:#ff5a5f"></i>CTA</span>
+
+    <div class="ng-foot-row">
+      <span class="ng-foot-year">2020&ndash;2026</span>
+      <a href="#" class="ng-foot-link">Terms and Conditions</a>
+      <a href="#" class="ng-foot-link">Privacy Policy</a>
+      <button class="ng-top" type="button" aria-label="Back to top">&uarr;</button>
+    </div>
+  </footer>
+</section>
+
+<style>
+  .ng-faq{
+    --ink:#161616;
+    --muted:#a0a5ab;
+    --line:#eaeaec;
+    --green:#c6f024;
+    background:#fff;
+    font-family:'Poppins','Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .ng-faq *{box-sizing:border-box;}
+  .ng-faq__inner{max-width:900px;margin:0 auto;padding:72px 22px 40px;}
+
+  .ng-faq__head{
+    text-align:center;margin:0 0 46px;
+    font-size:clamp(28px,4.4vw,46px);font-weight:700;color:var(--ink);letter-spacing:-.01em;
+  }
+  .ng-faq__head em{font-style:italic;font-weight:700;}
+
+  /* Accordion */
+  .ng-acc__item{border-top:1px solid var(--line);}
+  .ng-acc__item:last-child{border-bottom:1px solid var(--line);}
+  .ng-acc__q{
+    width:100%;background:none;border:none;cursor:pointer;font-family:inherit;
+    display:grid;grid-template-columns:44px 1fr 24px;align-items:center;gap:14px;
+    padding:22px 4px;text-align:left;
+  }
+  .ng-acc__num{font-size:12px;font-weight:600;color:var(--muted);}
+  .ng-acc__text{font-size:clamp(14px,1.7vw,17px);font-weight:600;color:var(--ink);}
+  .ng-acc__chev{color:#b7bcc2;font-size:14px;transition:transform .35s ease;justify-self:end;}
+  .ng-acc__item.open .ng-acc__chev{transform:rotate(180deg);}
+
+  .ng-acc__a{
+    display:grid;grid-template-rows:0fr;
+    transition:grid-template-rows .38s cubic-bezier(.44,0,.09,1);
+  }
+  .ng-acc__item.open .ng-acc__a{grid-template-rows:1fr;}
+  .ng-acc__a-inner{overflow:hidden;}
+  .ng-acc__a-inner p{
+    margin:0 0 14px;padding-left:58px;
+    font-size:13.5px;line-height:1.65;font-weight:500;color:var(--muted);max-width:620px;
+  }
+  .ng-acc__a-inner p:first-child{padding-top:2px;}
+  .ng-acc__a-inner p:last-child{margin-bottom:22px;}
+
+  /* ===== Footer ===== */
+  .ng-footer{
+    position:relative;
+    background:#fff;
+    padding:70px 22px 40px;
+    overflow:hidden;
+    border-top:1px solid var(--line);
+  }
+  .ng-foot-bg{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;justify-content:center;gap:2px;
+    pointer-events:none;padding-left:22px;
+  }
+  .ng-foot-bg span{
+    font-size:clamp(40px,8vw,92px);font-weight:700;color:#f2f2f3;
+    line-height:1.04;letter-spacing:-.02em;white-space:nowrap;
+  }
+
+  .ng-fpill{
+    position:absolute;left:var(--x);top:var(--y);
+    display:inline-flex;align-items:center;gap:7px;
+    background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.08);
+    padding:7px 14px;border-radius:999px;
+    font-size:12px;font-weight:600;color:var(--ink);
+    animation:ngFloatY 6s ease-in-out infinite;
+  }
+  .ng-fpill i{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .ng-fpill:nth-child(3){animation-duration:7.2s;}
+  .ng-fpill:nth-child(4){animation-duration:6.6s;}
+  .ng-fpill:nth-child(5){animation-duration:8s;}
+
+  .ng-foot-row{
+    position:relative;z-index:2;
+    max-width:900px;margin:0 auto;
+    display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+  }
+  .ng-foot-year{font-size:13px;font-weight:600;color:var(--ink);}
+  .ng-foot-link{font-size:13px;color:#4a4a4a;text-decoration:underline;text-underline-offset:3px;}
+  .ng-foot-link:hover{color:var(--ink);}
+  .ng-top{
+    margin-left:auto;width:40px;height:40px;border-radius:50%;
+    border:1px solid var(--line);background:#fff;cursor:pointer;
+    font-size:16px;color:var(--ink);
+    transition:transform .25s ease, background .25s ease;
+  }
+  .ng-top:hover{transform:translateY(-3px);background:#fafafa;}
+
+  @keyframes ngFloatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+
+  /* ----- Responsive ----- */
+  @media (max-width:600px){
+    .ng-faq__inner{padding:52px 16px 30px;}
+    .ng-acc__q{grid-template-columns:32px 1fr 20px;gap:10px;padding:18px 2px;}
+    .ng-acc__a-inner p{padding-left:42px;}
+    .ng-footer{padding:56px 16px 32px;}
+    .ng-fpill:nth-child(2){display:none;}   /* thin out pills on small screens */
+    .ng-foot-row{gap:14px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ng-fpill{animation:none!important;}
+    .ng-acc__a{transition:none!important;}
+  }
+</style>
+
+<script>
+(function(){
+  // Accordion (one open at a time; click open one closes others)
+  var items = document.querySelectorAll('#ng-qa [data-faq]');
+  items.forEach(function(item){
+    var btn = item.querySelector('.ng-acc__q');
+    btn.addEventListener('click', function(){
+      var isOpen = item.classList.contains('open');
+      items.forEach(function(i){ i.classList.remove('open'); });
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Back to top
+  var top = document.querySelector('#ng-qa .ng-top');
+  if(top){
+    top.addEventListener('click', function(){
+      if(window.lenis){ window.lenis.scrollTo(0); }
+      else { window.scrollTo({top:0, behavior:'smooth'}); }
+    });
+  }
+})();
+</script>
+
+
+<!-- ============================================================
+     GLOBAL: smooth scroll (Lenis) + in-page anchor links
+     + lightweight video-download deterrents
+     ============================================================ -->
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- Smooth scroll ----
+  if(!reduce && typeof Lenis !== 'undefined'){
+    var lenis = new Lenis({
+      duration: 1.1,
+      smoothWheel: true,
+      autoRaf: true
+    });
+    window.lenis = lenis;
+  }
+
+  // ---- Smooth in-page anchor navigation (nav links, CTA cards, etc.) ----
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    var href = a.getAttribute('href');
+    if(!href || href.length < 2) return;
+    a.addEventListener('click', function(e){
+      var target = document.querySelector(href);
+      if(!target) return;
+      if(window.lenis){
+        e.preventDefault();
+        window.lenis.scrollTo(target, {offset: -64});
+      }
+      // otherwise let the browser's native anchor jump + CSS
+      // scroll-behavior:smooth (see head) handle it.
+    });
+  });
+
+  // ---- Video protection ----
+  // The portfolio clips are embedded as Vimeo "background mode" iframes
+  // (no player chrome, no click-through) with pointer-events disabled, so
+  // right-click / drag never reaches the iframe in the first place. These
+  // extra listeners are a small additional deterrent for the wrapper
+  // elements themselves. None of this is a substitute for turning on
+  // Vimeo's own protections on the account that owns these videos:
+  //   Video settings → Privacy → "Allow download" = off, and
+  //   Video settings → Privacy → domain-restrict embeds to this site.
+  // Client-side tricks alone can never fully stop a determined download
+  // (devtools / screen recording always exist) — the Vimeo-side settings
+  // are the real control.
+  document.querySelectorAll('[data-vimeo-protect]').forEach(function(el){
+    el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    el.addEventListener('dragstart', function(e){ e.preventDefault(); });
+  });
+})();
+</script>
+
+</body>
+</html>
