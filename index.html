@@ -160,10 +160,10 @@
 
 <section class="ng-hero" id="ng-hero">
   <!-- floating metric pills -->
-  <span class="ng-pill ng-pill--cpa"  style="--x:6%;  --y:4%;">  <i class="dot" style="background:#ff5a5f"></i>CPA</span>
+  <span class="ng-pill ng-pill--cpa"  style="--x:4%;  --y:4%;">  <i class="dot" style="background:#ff5a5f"></i>CPA</span>
+  <span class="ng-pill ng-pill--ctr"  style="--x:27%; --y:8%;"> <i class="dot" style="background:#2fe6a0"></i>CTR</span>
   <span class="ng-pill ng-pill--roas" style="--x:64%; --y:2%;"> <i class="dot" style="background:#b6f24a"></i>ROAS</span>
-  <span class="ng-pill ng-pill--cpc"  style="--x:74%; --y:58%;"> <i class="dot" style="background:#5b5bff"></i>CPC</span>
-  <span class="ng-pill ng-pill--ctr"  style="--x:14%; --y:55%;"> <i class="dot" style="background:#2fe6a0"></i>CTR</span>
+  <span class="ng-pill ng-pill--cpc"  style="--x:87%; --y:7%;"> <i class="dot" style="background:#5b5bff"></i>CPC</span>
 
   <div class="ng-hero__inner">
     <!-- Headline with inline video pills -->
@@ -1004,6 +1004,12 @@
     .ng-jrow__left{grid-row:1;}
     .ng-jrow__mid{grid-row:2;}
     .ng-jrow__right{grid-row:3;}
+    /* the tablet breakpoint's .ng-jrow:last-child .ng-jrow__right rule
+       (grid-column:2; grid-row:auto) outranks the plain rule above on
+       specificity alone, so it was still winning here and shoving the
+       CTA card into a phantom second column. Match its specificity to
+       actually override it for the single-column mobile layout. */
+    .ng-jrow:last-child .ng-jrow__right{grid-column:1;grid-row:3;}
     .ng-label{color:var(--muted)!important;font-size:12px;}
     .ng-label--mid{margin-bottom:12px;color:var(--ink)!important;}
     .ng-p{font-size:14.5px;}
