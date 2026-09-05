@@ -172,14 +172,14 @@
         <span>I</span>
         <em>trim</em>
         <span>the</span>
-        <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448510?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
+        <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448510?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" fetchpriority="high" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
         <span>fat.</span>
       </span>
       <span class="ng-line">
         <span>You</span>
         <em>see</em>
         <span>the</span>
-        <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448408?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
+        <span class="ng-vid" data-vimeo-protect><iframe class="ng-vimeo" src="https://player.vimeo.com/video/1220448408?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;autopause=0&amp;byline=0&amp;title=0&amp;portrait=0&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen" fetchpriority="high" tabindex="-1" title="Ahmad Jan reel clip"></iframe></span>
         <span>ROAS.</span>
       </span>
     </h1>
@@ -753,9 +753,9 @@
     cards.forEach(function(c){ c.classList.add('is-in'); });
   }
 
-  // Portfolio clips are lazy-loaded Vimeo iframes: loading="lazy" on each
-  // iframe defers offscreen loads, and Vimeo's background player manages
-  // its own play state once loaded — no manual play/pause wiring needed.
+  // Portfolio clips are Vimeo background-player iframes; they load
+  // eagerly and manage their own play state, so no manual play/pause
+  // wiring is needed here.
 })();
 </script>
 
@@ -1602,9 +1602,9 @@
     cards.forEach(function(c){ c.classList.add('is-in'); });
   }
 
-  // Portfolio clips are lazy-loaded Vimeo iframes: loading="lazy" on each
-  // iframe defers offscreen loads, and Vimeo's background player manages
-  // its own play state once loaded — no manual play/pause wiring needed.
+  // Portfolio clips are Vimeo background-player iframes; they load
+  // eagerly and manage their own play state, so no manual play/pause
+  // wiring is needed here.
 })();
 </script>
 
